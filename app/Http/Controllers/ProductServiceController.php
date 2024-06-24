@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Utility;
 use App\Models\Vender;
 use App\Models\WarehouseProduct;
+use App\Models\warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -137,7 +138,12 @@ class ProductServiceController extends Controller
             }
 
             $productService->created_by     = \Auth::user()->creatorId();
-            $productService->save();
+            if($productService->save()){
+                $authuser = Auth::user();
+                $warehouse_id = warehouse::where('created_by', $authuser->creatorId())->first();
+                $addWarehouseStock = Utility::addWarehouseStock($productService->id, $productService->quantity, $warehouse_id->id);
+
+            }
             CustomField::saveData($productService, $request->customField);
 
             return redirect()->route('productservice.index')->with('success', __('Product successfully created.'));
@@ -384,7 +390,6 @@ class ProductServiceController extends Controller
 
     public function searchProducts(Request $request)
     {
-//        dd($request->all());
 
         $lastsegment = $request->session_key;
 
@@ -492,9 +497,12 @@ class ProductServiceController extends Controller
 
             if ($product) {
                 $productquantity = $product->getTotalProductQuantity();
-            }
+            }   
+
+            
 
             if (!$product || ($session_key == 'pos' && $productquantity == 0)) {
+
                 return response()->json(
                     [
                         'code' => 404,
@@ -738,6 +746,7 @@ class ProductServiceController extends Controller
                 unset($cart[$id]);
             }
 
+
             if ($quantity) {
 
                 $cart[$id]["quantity"] = $quantity;
@@ -751,6 +760,7 @@ class ProductServiceController extends Controller
                 $cart[$id]["subtotal"] = $subtotal + $tax;
 
             }
+
 
             if ( isset($cart[$id]) && isset($cart[$id]["originalquantity"]) < $cart[$id]['quantity'] && $session_key == 'pos') {
                 return response()->json(
