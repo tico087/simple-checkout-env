@@ -819,7 +819,7 @@
                     @endif
                     <!--------------------- End POs System ----------------------------------->
 
-                    @if(\Auth::user()->type!='super admin')
+                    <!-- @if(\Auth::user()->type!='super admin')
                         <li class="dash-item dash-hasmenu {{ (Request::segment(1) == 'support')?'active':''}}">
                             <a href="{{route('support.index')}}" class="dash-link">
                                 <span class="dash-micon"><i class="ti ti-headphones"></i></span><span class="dash-mtext">{{__('Support System')}}</span>
@@ -835,7 +835,7 @@
                                 <span class="dash-micon"><i class="ti ti-message-circle"></i></span><span class="dash-mtext">{{__('Messenger')}}</span>
                             </a>
                         </li>
-                    @endif
+                    @endif -->
 
                     <!--------------------- Start System Setup ----------------------------------->
 
