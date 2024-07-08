@@ -33,7 +33,7 @@
                         {{ Form::open(['route' => ['productservice.index'], 'method' => 'GET', 'id' => 'product_service']) }}
                         <div class="d-flex align-items-center justify-content-end">
                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                                <div class="btn-box">
+                                <div class="btn-box">sssssssss
                                     {{ Form::label('category', __('Category'),['class'=>'form-label']) }}
                                     {{ Form::select('category', $category, null, ['class' => 'form-control select','id'=>'choices-multiple', 'required' => 'required']) }}
                                 </div>

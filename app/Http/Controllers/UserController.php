@@ -284,7 +284,9 @@ class UserController extends Controller
 
 
     public function destroy($id)
-    {
+    {    
+
+        dd($id);
 
         if(\Auth::user()->can('delete user'))
         {
