@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: perfect_pay
+    networks:
+      - gato-net
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb/mysql-init.sql:/docker-entrypoint-initdb.d/mysql-init.sql
+      - ./mariadb/my.cnf:/etc/mysql/my.cnf
+      - mariadb-data:/var/lib/mysql
+    command: ['mariadbd', '--default-authentication-plugin=mysql_native_password'] 
+
+  laravel:
+    image: bitnami/laravel:latest
+    container_name: laravel
+    restart: unless-stopped
+    networks:
+      - gato-net
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./laravel:/var/www
+      - ./wait-for-it.sh:/wait-for-it.sh
+    depends_on:
+      - mariadb
+    environment:
+      DB_HOST: mariadb
+      DB_DATABASE: perfect_pay
+      DB_USERNAME: root
+      DB_PASSWORD: 123
+    working_dir: /var/www
+    entrypoint: ["sh", "-c", "composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000"]
+    # entrypoint: ["sh", "-c", "chmod +x /wait-for-it.sh && /wait-for-it.sh mariadb perfect_pay && composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000"]
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - gato-net
+    depends_on:
+      - laravel
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+networks:
+  gato-net:
+    driver: bridge
+
+volumes:
+  mariadb-data:
