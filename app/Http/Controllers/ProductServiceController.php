@@ -581,7 +581,7 @@ class ProductServiceController extends Controller
                             <td class="">
                                    <span class="quantity buttons_added">
                                          <input type="button" value="-" class="minus">
-                                         <input type="number" step="' . ($product->grams == 1 ? '0.01' : '1') . '" min="0.01" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '">
+                                         <input type="number" step="1" min="1" max="" name="quantity" title="' . __('Quantity') . '" class="input-number" size="4" data-url="' . url('update-cart/') . '" data-id="' . $id . '">
                                          <input type="button" value="+" class="plus">
                                    </span>
                             </td>
@@ -608,18 +608,13 @@ class ProductServiceController extends Controller
                         </td>';
 
 
-
-            if($product->grams){
-                $quantity2 = 0.01;
-            }else{
-                $quantity2 = 1;
-            }            
+      
             // if cart is empty then this the first product
             if (!$cart) {
                 $cart = [
                     $id => [
                         "name" => $productname,
-                        "quantity" => $quantity2,
+                        "quantity" => 1,
                         "price" => $productprice,
                         "id" => $id,
                         "tax" => $producttax,
@@ -694,7 +689,7 @@ class ProductServiceController extends Controller
             // if item not exist in cart then add to cart with quantity = 1
             $cart[$id] = [
                 "name" => $productname,
-                "quantity" => $quantity2,
+                "quantity" => 1,
                 "price" => $productprice,
                 "tax" => $producttax,
                 "subtotal" => $subtotal,
@@ -739,7 +734,13 @@ class ProductServiceController extends Controller
     }
 
     public function updateCart(Request $request)
-    {
+    {   
+
+
+        $productServices = ProductService::where('id', '=', $request->id)->first();
+
+        $grams = $productServices->grams;
+        
 
         $id          = $request->id;
         $quantity    = $request->quantity;
@@ -757,12 +758,25 @@ class ProductServiceController extends Controller
 
             if ($quantity) {
 
+                $gramQuantity = $quantity; // Initialize gramQuantity
                 $cart[$id]["quantity"] = $quantity;
 
                 $producttax            = isset($cart[$id]) ? $cart[$id]["tax"]:0;
                 $productprice          = $cart[$id]["price"];
+                if ($grams) {
+                    $gramQuantity = $quantity; // Set gramQuantity for gram-based products
+                    $productpricePerGram = $productprice / 1000; // Adjust price per gram
+                    $subtotal = $gramQuantity * $productpricePerGram;
 
-                $subtotal = $productprice * $quantity;
+                } else {
+                    $gramQuantity = $quantity; // Keep gramQuantity for unit-based products
+                    $productpricePerGram = $productprice; // Use original price for unit-based products
+                    $subtotal = $productprice * $quantity;
+
+                }
+
+               
+
                 $tax      = ($subtotal * $producttax) / 100;
 
                 $cart[$id]["subtotal"] = $subtotal + $tax;
