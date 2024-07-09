@@ -2,28 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
 use App\DataObjects\CustomerData;
-use Illuminate\Http\JsonResponse;
+use App\Models\Customer;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerController extends Controller
 {
-    public function store(CustomerData $customerData): JsonResponse
-    {
-        $customer = Customer::create($customerData->toArray());
+    // public function index(): JsonResource
+    // {
+    //     return JsonResource::collection(Customer::all());
+    // }
 
-        return response()->json([
-            'message' => 'Customer created successfully',
-            'customer' => $customer
-        ], 201);
+    public function store(CustomerData $data): JsonResource
+    {
+        $customer = Customer::create($data->toArray());
+        return new JsonResource($customer);
     }
 
-    public function show(int $id): JsonResponse
+    // public function show(int $id): JsonResource
+    // {
+    //     return new JsonResource(Customer::findOrFail($id));
+    // }
+
+    public function update(CustomerData $data, int $id): JsonResource
     {
         $customer = Customer::findOrFail($id);
-
-        return response()->json([
-            'customer' => $customer
-        ]);
+        $customer->update($data->toArray());
+        return new JsonResource($customer);
     }
+
+    // public function destroy(int $id): JsonResource
+    // {
+    //     $customer = Customer::findOrFail($id);
+    //     $customer->delete();
+    //     return new JsonResource($customer);
+    // }
 }

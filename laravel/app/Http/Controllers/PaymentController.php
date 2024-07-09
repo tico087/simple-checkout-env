@@ -2,28 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
 use App\DataObjects\PaymentData;
-use Illuminate\Http\JsonResponse;
+use App\Models\Payment;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class PaymentController extends Controller
 {
-    public function store(PaymentData $paymentData): JsonResponse
+    public function index(): JsonResource
     {
-        $payment = Payment::create($paymentData->toArray());
-
-        return response()->json([
-            'message' => 'Pagamento Criado com sucesso!',
-            'payment' => $payment
-        ], 201);
+        return JsonResource::collection(Payment::all());
     }
 
-    public function show(int $id): JsonResponse
+    public function store(PaymentData $data): JsonResource
+    {
+        $payment = Payment::create($data->toArray());
+        return new JsonResource($payment);
+    }
+
+    public function show(int $id): JsonResource
+    {
+        return new JsonResource(Payment::findOrFail($id));
+    }
+
+    public function update(PaymentData $data, int $id): JsonResource
     {
         $payment = Payment::findOrFail($id);
+        $payment->update($data->toArray());
+        return new JsonResource($payment);
+    }
 
-        return response()->json([
-            'payment' => $payment
-        ]);
+    public function destroy(int $id): JsonResource
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->delete();
+        return new JsonResource($payment);
     }
 }
+

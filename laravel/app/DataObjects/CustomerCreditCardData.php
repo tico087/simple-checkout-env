@@ -10,7 +10,8 @@ class CustomerCreditCardData extends Data
         public int $customer_id,
         public string $card_number,
         public string $expiry_date,
-        public string $card_holder_name
+        public string $card_holder_name,
+        public string $cvv
     ) {}
 
     public static function fromArray(array $data): static
@@ -20,7 +21,7 @@ class CustomerCreditCardData extends Data
             $data['card_number'],
             $data['expiry_date'],
             $data['card_holder_name'],
-
+            $data['cvv']
         );
     }
 }

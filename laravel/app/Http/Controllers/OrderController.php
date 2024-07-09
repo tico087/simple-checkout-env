@@ -2,28 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\DataObjects\OrderData;
-use Illuminate\Http\JsonResponse;
+use App\Models\Order;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderController extends Controller
 {
-    public function store(OrderData $orderData): JsonResponse
+    public function index(): JsonResource
     {
-        $order = Order::create($orderData->toArray());
-
-        return response()->json([
-            'message' => 'Order created successfully',
-            'order' => $order
-        ], 201);
+        return JsonResource::collection(Order::all());
     }
 
-    public function show(int $id): JsonResponse
+    public function store(OrderData $data): JsonResource
+    {
+        $order = Order::create($data->toArray());
+        return new JsonResource($order);
+    }
+
+    public function show(int $id): JsonResource
+    {
+        return new JsonResource(Order::findOrFail($id));
+    }
+
+    public function update(OrderData $data, int $id): JsonResource
     {
         $order = Order::findOrFail($id);
+        $order->update($data->toArray());
+        return new JsonResource($order);
+    }
 
-        return response()->json([
-            'order' => $order
-        ]);
+    public function destroy(int $id): JsonResource
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+        return new JsonResource($order);
     }
 }
