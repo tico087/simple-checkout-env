@@ -241,9 +241,12 @@ Route::group(['middleware' => ['verified']], function () {
     Route::get('/home', [DashboardController::class, 'account_dashboard_index'])->name('home')->middleware(['XSS', 'revalidate',]);
     Route::get('/', [DashboardController::class, 'account_dashboard_index'])->name('dashboard')->middleware(['XSS', 'revalidate',]);
     Route::get('/account-dashboard', [DashboardController::class, 'account_dashboard_index'])->name('dashboard')->middleware(['auth','XSS', 'revalidate']);
+    Route::get('/pov-dashboard', [DashboardController::class, 'pov_dashboard_index'])->name('pos.dashboard')->middleware(['auth','XSS', 'revalidate']);
     Route::get('/project-dashboard', [DashboardController::class, 'project_dashboard_index'])->name('project.dashboard')->middleware(['auth','XSS', 'revalidate']);
     Route::get('/hrm-dashboard', [DashboardController::class, 'hrm_dashboard_index'])->name('hrm.dashboard')->middleware(['auth','XSS', 'revalidate']);
     Route::get('/crm-dashboard', [DashboardController::class, 'crm_dashboard_index'])->name('crm.dashboard')->middleware(['auth','XSS', 'revalidate']);
+    Route::post('/dashboard/filter-by-date', [DashboardController::class, 'pov_dashboard_index'])->name('dashboard.filterByDate');
+    Route::post('/dashboard/filter-by-today', [DashboardController::class, 'pov_dashboard_index'])->name('dashboard.filterByToday');
 
 
     Route::get('profile', [UserController::class, 'profile'])->name('profile')->middleware(['auth', 'XSS', 'revalidate']);

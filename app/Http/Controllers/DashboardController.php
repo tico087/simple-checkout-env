@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
 
 use App\Models\AccountList;
 use App\Models\Announcement;
@@ -24,6 +25,7 @@ use App\Models\Lead;
 use App\Models\LeadStage;
 use App\Models\Meeting;
 use App\Models\Order;
+use App\Models\Pos;
 use App\Models\Payees;
 use App\Models\Payer;
 use App\Models\Payment;
@@ -135,6 +137,7 @@ class DashboardController extends Controller
                 $data['weeklyBill']        = \Auth::user()->weeklyBill();
                 $data['monthlyBill']       = \Auth::user()->monthlyBill();
                 $data['goals']             = Goal::where('created_by', '=', \Auth::user()->creatorId())->where('is_display', 1)->get();
+
 
                     return view('dashboard.account-dashboard', $data);
                 }
@@ -269,6 +272,98 @@ class DashboardController extends Controller
             return $this->account_dashboard_index();
         }
     }
+
+   public function pov_dashboard_index(Request $request)
+{
+    $user = Auth::user();
+    if (\Auth::user()->can('show project dashboard')) {
+        if ($user->type == 'admin') {
+            return view('admin.dashboard');
+        } else {
+            $date = $request->input('date');
+            $posPayments = Pos::where('created_by', '=', \Auth::user()->creatorId());
+            $posPayments2 = Pos::where('created_by', '=', \Auth::user()->creatorId());
+
+
+            if ($date) {
+                $posPayments->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
+            }
+
+            $posPayments2->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
+
+            $posPayments = $posPayments->get();
+            $posPayments2 = $posPayments2->get();
+
+            $home_data = [];
+            $user_projects = $user->projects()->pluck('project_id')->toArray();
+            $project_tasks = ProjectTask::whereIn('project_id', $user_projects)->get();
+            $project_expense = Expense::whereIn('project_id', $user_projects)->get();
+            $seven_days = Utility::getLastSevenDays();
+
+            $complete_project = $user->projects()->where('status', 'LIKE', 'complete')->count();
+            $home_data['total_project'] = [
+                'total' => count($user_projects),
+                'percentage' => Utility::getPercentage($complete_project, count($user_projects)),
+            ];
+
+            $complete_task = ProjectTask::where('is_complete', '=', 1)->whereRaw("find_in_set('" . $user->id . "',assign_to)")->whereIn('project_id', $user_projects)->count();
+            $home_data['total_task'] = [
+                'total' => $project_tasks->count(),
+                'percentage' => Utility::getPercentage($complete_task, $project_tasks->count()),
+            ];
+
+            $total_expense = 0;
+            $total_project_amount = 0;
+            foreach ($user->projects as $pr) {
+                $total_project_amount += $pr->budget;
+            }
+            foreach ($project_expense as $expense) {
+                $total_expense += $expense->amount;
+            }
+            $home_data['total_expense'] = [
+                'total' => $project_expense->count(),
+                'percentage' => Utility::getPercentage($total_expense, $total_project_amount),
+            ];
+
+            $home_data['total_user'] = Auth::user()->contacts->count();
+            $task_overview = [];
+            $timesheet_logged = [];
+            foreach ($seven_days as $date => $day) {
+                $task_overview[$day] = ProjectTask::where('is_complete', '=', 1)->where('marked_at', 'LIKE', $date)->whereIn('project_id', $user_projects)->count();
+                $time = Timesheet::whereIn('project_id', $user_projects)->where('date', 'LIKE', $date)->pluck('time')->toArray();
+                $timesheet_logged[$day] = str_replace(':', '.', Utility::calculateTimesheetHours($time));
+            }
+
+            $home_data['task_overview'] = $task_overview;
+            $home_data['timesheet_logged'] = $timesheet_logged;
+
+            $total_project = count($user_projects);
+            $project_status = [];
+            foreach (Project::$project_status as $k => $v) {
+                $project_status[$k]['total'] = $user->projects->where('status', 'LIKE', $k)->count();
+                $project_status[$k]['percentage'] = Utility::getPercentage($project_status[$k]['total'], $total_project);
+            }
+            $home_data['project_status'] = $project_status;
+            $home_data['due_project'] = $user->projects()->orderBy('end_date', 'DESC')->limit(5)->get();
+            $home_data['due_tasks'] = ProjectTask::where('is_complete', '=', 0)->whereIn('project_id', $user_projects)->orderBy('end_date', 'DESC')->limit(5)->get();
+            $home_data['last_tasks'] = ProjectTask::whereIn('project_id', $user_projects)->orderBy('end_date', 'DESC')->limit(5)->get();
+
+            if ($request->ajax()) {
+                $rendahoje = 0;
+                foreach ($posPayments as $posPayment) {
+                    $rendahoje += floatval($posPayment->posPayment->discount_amount);
+                }
+                $view = view('dashboard.partials.pos_table', compact('posPayments'))->render();
+                return response()->json(['html' => $view, 'rendahoje' => Auth::user()->priceFormat($rendahoje)]);
+            }
+
+            return view('dashboard.pov-dashboard', compact('home_data', 'posPayments','posPayments2'));
+        }
+    } else {
+        return $this->account_dashboard_index();
+    }
+}
+
 
     public function hrm_dashboard_index()
     {

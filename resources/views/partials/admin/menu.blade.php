@@ -784,6 +784,11 @@
                         <li class="dash-item dash-hasmenu {{ (Request::segment(1) == 'warehouse' || Request::segment(1) == 'purchase' || Request::route()->getName() == 'pos.barcode' || Request::route()->getName() == 'pos.print' || Request::route()->getName() == 'pos.show')?' active dash-trigger':''}}">
                             <a href="#!" class="dash-link"><span class="dash-micon"><i class="ti ti-layers-difference"></i></span><span class="dash-mtext">{{__('POS System')}}</span><span class="dash-arrow"><i data-feather="chevron-right"></i></span></a>
                             <ul class="dash-submenu {{ (Request::segment(1) == 'warehouse' || Request::segment(1) == 'purchase' || Request::route()->getName() == 'pos.barcode' || Request::route()->getName() == 'pos.print' || Request::route()->getName() == 'pos.show')?'show':''}}">
+                               
+                                @can('manage warehouse')
+                                <li class="dash-item {{ (Request::route()->getName() == 'pos.dashboard') ? ' active' : '' }}"><a class="dash-link" href="{{ route('pos.dashboard') }}">DashBoard PDV</a>
+                                </li>
+                            @endcan
                                 @can('manage warehouse')
                                     <li class="dash-item {{ (Request::route()->getName() == 'warehouse.index' || Request::route()->getName() == 'warehouse.show') ? ' active' : '' }}"><a class="dash-link" href="{{ route('warehouse.index') }}">{{__('Warehouse')}}</a>
                                     </li>

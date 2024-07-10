@@ -48,7 +48,7 @@
                                             <td>{{ !empty($posPayment->customer) ? $posPayment->customer->name : '' }} </td>
                                         @endif
                                         <td>{{ !empty($posPayment->warehouse) ? $posPayment->warehouse->name : '' }} </td>
-                                        <td>{{!empty($posPayment->posPayment)? \Auth::user()->priceFormat ($posPayment->posPayment->amount) :0}}</td>
+                                        <td>{{!empty($posPayment->posPayment)? \Auth::user()->priceFormat ($posPayment->posPayment->amount) :0}}aa</td>
                                         <td>{{!empty($posPayment->posPayment)? \Auth::user()->priceFormat($posPayment->posPayment->discount) :0}}</td>
                                         <td>{{!empty($posPayment->posPayment)? \Auth::user()->priceFormat($posPayment->posPayment->discount_amount) :0}}</td>
                                     </tr>
