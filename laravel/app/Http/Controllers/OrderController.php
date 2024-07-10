@@ -24,17 +24,4 @@ class OrderController extends Controller
         return new JsonResource(Order::findOrFail($id));
     }
 
-    public function update(OrderData $data, int $id): JsonResource
-    {
-        $order = Order::findOrFail($id);
-        $order->update($data->toArray());
-        return new JsonResource($order);
-    }
 
-    public function destroy(int $id): JsonResource
-    {
-        $order = Order::findOrFail($id);
-        $order->delete();
-        return new JsonResource($order);
-    }
-}

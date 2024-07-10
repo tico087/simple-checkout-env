@@ -9,10 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerAddressController extends Controller
 {
-    // public function index(): JsonResource
-    // {
-    //     return JsonResource::collection(CustomerAddress::all());
-    // }
 
     public function store(CustomerAddressData $data): JsonResource
     {
@@ -20,10 +16,6 @@ class CustomerAddressController extends Controller
         return new JsonResource($address);
     }
 
-    // public function show(int $id): JsonResource
-    // {
-    //     return new JsonResource(CustomerAddress::findOrFail($id));
-    // }
 
     public function update(CustomerAddressData $data, int $id): JsonResource
     {
@@ -32,10 +24,4 @@ class CustomerAddressController extends Controller
         return new JsonResource($address);
     }
 
-    // public function destroy(int $id): JsonResource
-    // {
-    //     $address = CustomerAddress::findOrFail($id);
-    //     $address->delete();
-    //     return new JsonResource($address);
-    // }
 }

@@ -28,3 +28,5 @@ RUN composer install
 
 # Expõe a porta que o Laravel usará
 EXPOSE 8000
+
+ARG DB_PASSWORD = 123

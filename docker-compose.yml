@@ -36,9 +36,9 @@ services:
       DB_DATABASE: perfect_pay
       DB_USERNAME: root
       DB_PASSWORD: 123
+      # ASAAS_API_KEY: ${ASAAS_API_KEY}
     working_dir: /var/www
     entrypoint: ["sh", "-c", "composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000"]
-    # entrypoint: ["sh", "-c", "chmod +x /wait-for-it.sh && /wait-for-it.sh mariadb perfect_pay && composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000"]
 
   nginx:
     image: nginx:latest

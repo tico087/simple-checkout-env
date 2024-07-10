@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    'payments' => [
+        'asaas' => [
+            'headers' => [
+                'content-type' => 'application/json',
+                'accept' => 'application/json',
+                'access_token' => env('ASAAS_API_KEY', 'ASAAS_KEY'),
+            ],
+            'url' => 'asaas.com/api',
+            'mode' => env('ASAAS_API_MODE', 'sandbox'),
+            'version' => env('ASAAS_API_VERSION', 'v3'),
+
+        ],
+
+
+
+    ],
+
+
 ];

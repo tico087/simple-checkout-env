@@ -2,27 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\DataObjects\OrderData;
+
 use App\Services\PaymentService;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\View\View;
+use JsonException;
+use App\DataObjects\PaymentData;
 
 class CheckoutController extends Controller
 {
 
 
-    public function __construct( protected PaymentService $paymentService)
+    public function __construct(protected PaymentService $service)
     {
     }
 
-    public function checkout(OrderData $data): JsonResource
+    public function index(): View
     {
-        $order = $this->paymentService->processOrder($data);
-        return new JsonResource($order);
+        return view('checkout');
+    }
+
+    public function process(PaymentData $data): JsonResource
+    {
+
+        // try{
+            // $customer = $this->service->createApiCustomer($data->customer);
+            $payment = $this->service->createApiPayment($data);
+            return new JsonResource($payment);
+        // }catch (JsonException){
+            // return response()->json(['errors' => $customer['errors']], 400);
+        // }
+
+
     }
 
     public function thankYou(int $orderId): JsonResource
     {
-        $order = $this->paymentService->getOrderDetails($orderId);
+        $order = $this->service->getApiPayment($orderId);
         return new JsonResource($order);
     }
 }
