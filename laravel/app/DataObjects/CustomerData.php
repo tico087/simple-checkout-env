@@ -2,11 +2,9 @@
 
 namespace App\DataObjects;
 
-use App\Models\CustomerAddress;
-use App\Models\CustomerCreditCard;
+use App\DataObjects\{CustomerCreditCardData};
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
-use Spatie\LaravelData\DataCollection;
+
 
 class CustomerData extends Data
 {
@@ -16,25 +14,20 @@ class CustomerData extends Data
         public ?string $mobile_phone,
         public ?string $phone,
         public string $doc,
-
-        // #[DataCollectionOf(CustomerAddress::class)]
-        // public ?DataCollection $address,
-
-        // #[DataCollectionOf(CustomerCreditCard::class)]
-        // public ?DataCollection $creditcard,
-    ) {}
+        // public ?CustomerCreditCardData $creditcard,
+    ) {
+    }
 
     public static function fromArray(array $data): static
     {
+        // dd($data);
         return new static(
-            name : $data['name'],
+            name: $data['name'],
             email: $data['email'] ?? null,
             mobile_phone: $data['mobile_phone'] ?? null,
             phone: $data['phone'] ?? null,
             doc: $data['doc'],
-            // address: $data['address'] ?? [],
-            // creditcard: $data['creditcard'] ?? []
+            // creditcard: CustomerCreditCardData::fromArray($data['creditcard']) ?? []
         );
     }
 }
-

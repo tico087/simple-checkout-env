@@ -6,12 +6,12 @@ namespace App\Http\Controllers;
 use App\Services\PaymentService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\View\View;
-use JsonException;
+use App\Models\Order;
 use App\DataObjects\PaymentData;
+use Illuminate\Http\JsonResponse;
 
 class CheckoutController extends Controller
 {
-
 
     public function __construct(protected PaymentService $service)
     {
@@ -19,26 +19,40 @@ class CheckoutController extends Controller
 
     public function index(): View
     {
-        return view('checkout');
+        $products = $this->mockProducts();
+        return view('checkout.index', compact('products'));
     }
 
-    public function process(PaymentData $data): JsonResource
+
+    public function process(PaymentData $data): JsonResponse
     {
-
-        // try{
-            // $customer = $this->service->createApiCustomer($data->customer);
-            $payment = $this->service->createApiPayment($data);
-            return new JsonResource($payment);
-        // }catch (JsonException){
-            // return response()->json(['errors' => $customer['errors']], 400);
-        // }
-
-
+        try {
+            $payment = $this->service->processTransaction($data);
+            return new JsonResponse($payment);
+        } catch (\JsonException $e) {
+            report($e);
+            return new JsonResponse(['errors' => ['message' => 'Erro ao processar a Trasanção, Verifique os Dados inseridos ou entre em Contado com o nosso Suporte.']], 400);
+        } catch (\Exception $e) {
+            report($e);
+            return new JsonResponse([
+                'errors' => ['message' => 'Erro ao processar a Trasanção, Verifique os Dados inseridos ou entre em Contado com o nosso Suporte.']
+            ], 500);
+        }
     }
 
-    public function thankYou(int $orderId): JsonResource
+    public function thanksPage(int $orderId): View
     {
-        $order = $this->service->getApiPayment($orderId);
-        return new JsonResource($order);
+        $order = Order::findOrFail($orderId);
+        return view('checkout.thanks', ["order" => $orderId]);
+    }
+
+    public function mockProducts(): array
+    {
+        return [
+            'items' => [
+                ['name' => 'Aspirador', 'price' => 237.90, 'id' => 456],
+                ['name' => 'Tapete Médio', 'price' => 180.27, 'id' => 841],
+            ]
+        ];
     }
 }

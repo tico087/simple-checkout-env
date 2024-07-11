@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\DataObjects\PaymentData;
 use App\Models\Payment;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PaymentController extends Controller

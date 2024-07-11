@@ -36,21 +36,24 @@ class CheckoutControllerTest extends TestCase
         ];
 
         return [
-            'response' => app(PaymentService::class)->createApiCustomer(CustomerData::fromArray($data)),
+            'response' => app(PaymentService::class)->createCustomer(CustomerData::fromArray($data)),
             'user' => $user
         ];
     }
 
     public function create_payment_payload($method): array
     {
-        $customer = $this->create_customer_payload();
+        // $customer = $this->create_customer_payload();
+        // dd($customer);
+
         $data = [
-            "customer_api_id" => $customer['response']['id'],
+            "customer_api_id" => 'cus_000006096246',//$customer['response']['id'],
             "payment_method" => $method,
             "due_date" => "2024-10-30",
             "amount" => 100,
             "description" => "Pedido 056984",
             "external_reference" => "056984",
+            "total_value" => 100
         ];
 
         if ($method === "credit_card") {
@@ -71,14 +74,17 @@ class CheckoutControllerTest extends TestCase
                     "complement" => null,
                     "phone" => "4738010919",
                     "mobile_phone" => "47998781877"
-                ]
+                ],
+                "installments" => 2,
+                "total_value" => 105
             ];
 
             $data = array_merge($data, $creditcard);
+            // dd($data);
         }
         $formRequest['form_request'] = $data;
         $data = array_merge($data, $formRequest);
-
+        // dd($data);
         return $data;
     }
 
@@ -93,12 +99,14 @@ class CheckoutControllerTest extends TestCase
 
 
 
-    public function test_processes_payment_successfully()
+    public function test_processes_creditcard_payment_successfully()
     {
 
-        $data = $this->create_payment_payload('credit_card');
+        $data = $this->create_payment_payload('CREDIT_CARD');
         $response = $this->post(route('checkout.process'), $data);
         $response->assertStatus(200);
+
+        // dd($data);
 
         // $response->assertJson([
         //     'object' => 'payment',
@@ -110,6 +118,49 @@ class CheckoutControllerTest extends TestCase
         //     'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
         // ]);
     }
+
+    public function test_processes_bankslip_payment_successfully()
+    {
+
+        $data = $this->create_payment_payload('BOLETO');
+        $response = $this->post(route('checkout.process'), $data);
+        $response->assertStatus(200);
+
+        // dd($data);
+
+        // $response->assertJson([
+        //     'object' => 'payment',
+        //     'id' => 'pay_080225913252',
+        //     'customer' => 'cus_G7Dvo4iphUNk',
+        //     'status' => 'PENDING',
+        //     'description' => 'Pedido 056984',
+        //     'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
+        //     'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
+        // ]);
+    }
+
+    public function test_processes_pix_payment_successfully()
+    {
+
+        $data = $this->create_payment_payload('PIX');
+        $response = $this->post(route('checkout.process'), $data);
+        $response->assertStatus(200);
+
+        // dd($data);
+
+        // $response->assertJson([
+        //     'object' => 'payment',
+        //     'id' => 'pay_080225913252',
+        //     'customer' => 'cus_G7Dvo4iphUNk',
+        //     'status' => 'PENDING',
+        //     'description' => 'Pedido 056984',
+        //     'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
+        //     'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
+        // ]);
+    }
+
+
+
 
 
     // public function test_returns_error_for_invalid_customer_400()

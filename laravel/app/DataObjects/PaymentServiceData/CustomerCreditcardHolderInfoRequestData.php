@@ -4,18 +4,20 @@ namespace App\DataObjects\PaymentServiceData;
 
 use Spatie\LaravelData\Data;
 
-class CustomerCredicartHolderInfoRequestData extends Data
+class CustomerCreditcardHolderInfoRequestData extends Data
+
 {
     public function __construct(
-        public ?string $name,
+        public string $name,
         public ?string $email,
-        public ?string $cpfCnpj,
+        public string $cpfCnpj,
         public ?string $postalCode,
         public ?string $addressNumber,
         public ?string $phone,
         public ?string $mobilePhone,
 
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): static
     {

@@ -38,7 +38,7 @@ services:
       DB_PASSWORD: 123
       # ASAAS_API_KEY: ${ASAAS_API_KEY}
     working_dir: /var/www
-    entrypoint: ["sh", "-c", "composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000"]
+    entrypoint: ["sh", "-c", "composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000 && yarn install && yarn build"]
 
   nginx:
     image: nginx:latest
