@@ -286,7 +286,7 @@ class DashboardController extends Controller
 
 
             if ($date) {
-                $posPayments->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
+                $posPayments->whereDate('created_at', '=', $date);
             }
 
             $posPayments2->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]);
