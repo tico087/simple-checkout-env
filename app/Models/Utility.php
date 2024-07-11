@@ -2728,6 +2728,24 @@ class Utility extends Model
 
     }
 
+    public static function editWarehouseStock($product_id, $quantity, $warehouse_id): void
+    {
+
+        $product = WarehouseProduct::where('product_id', $product_id)->where('warehouse_id', $warehouse_id)->first();
+
+        if($product){
+            $data = WarehouseProduct::updateOrCreate(
+                ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'created_by' => \Auth::user()->id],
+                ['warehouse_id' => $warehouse_id, 'product_id' => $product_id, 'quantity' => $quantity, 'created_by' => \Auth::user()->id]
+            );
+        }
+
+        
+
+
+    }
+
+
     public static function starting_number($id, $type)
     {
 

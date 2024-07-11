@@ -253,7 +253,12 @@ class ProductServiceController extends Controller
                 }
 
                 $productService->created_by     = \Auth::user()->creatorId();
-                $productService->save();
+                if($productService->save()){
+                    $authuser = Auth::user();
+                    $warehouse_id = warehouse::where('created_by', $authuser->creatorId())->first();
+                    $editWarehouseStock = Utility::editWarehouseStock($productService->id, $productService->quantity, $warehouse_id->id);
+    
+                }
                 CustomField::saveData($productService, $request->customField);
 
                 return redirect()->route('productservice.index')->with('success', __('Product successfully updated.'));
