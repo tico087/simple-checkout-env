@@ -31,4 +31,19 @@ class CustomerAddressData extends Data
             complement: $data['complement'] ?? null,
         );
     }
+
+
+    public static function fromResponse(array $data): static
+    {
+        return new static(
+            customer_id: $data['customer_id'],
+            address: $data['address'] ?? null,
+            neighborhood: $data['province'] ?? null,
+            city: $data['cityName'] ?? null,
+            state: $data['state'] ?? null,
+            zipcode: $data['postalCode'],
+            number: $data['addressNumber'] ?? null,
+            complement: $data['complement'] ?? null,
+        );
+    }
 }

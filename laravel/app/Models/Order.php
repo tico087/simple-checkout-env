@@ -10,7 +10,8 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['customer_id', 'total_amount', 'status'];
+    // protected $fillable = ['customer_id', 'total_amount', 'status'];
+    protected $guarded = ['created_at', 'updated_at'];
 
     public function customer(): BelongsTo
     {

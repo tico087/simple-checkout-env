@@ -23,5 +23,4 @@ class OrderController extends Controller
     {
         return new JsonResource(Order::findOrFail($id));
     }
-
-
+}

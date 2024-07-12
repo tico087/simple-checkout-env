@@ -9,12 +9,12 @@ class CustomerCreditCardData extends Data
 {
     public function __construct(
         public int $customer_id,
-        public string $card_number,
-        public string $expiry_date,
-        public string $card_holder_name,
-        public string $doc_number,
-        public string $cvv,
-        public CustomerAddressData $address,
+        public string $last_numbers,
+        public ?string $brand,
+        public ?string $expiry_date,
+        public ?string $card_holder_name,
+        public ?string $token,
+
     ) {
     }
 
@@ -22,27 +22,24 @@ class CustomerCreditCardData extends Data
     {
         return new static(
             customer_id: $data['customer_id'],
-            card_number: $data['card_number'],
-            expiry_date: $data['expiry_date'],
-            card_holder_name: $data['card_holder_name'],
-            doc_number: $data['doc_number'],
-            cvv: $data['cvv'],
-            address: CustomerAddressData::fromArray(self::getFullAddress($data))
+            last_numbers: $data['last_numbers'],
+            brand: $data['brand'] ?? null,
+            expiry_date: $data['expiry_date'] ?? null,
+            card_holder_name: $data['card_holder_name'] ?? null,
+            token: $data['token'] ?? null,
         );
     }
 
-
-    private function getFullAddress($data): array
+    public static function fromResponse(array $data): static
     {
-        return [
-            $data['customer_id'] ?? null,
-            $data['street'] ?? null,
-            $data['neighborhood'] ?? null,
-            $data['city'] ?? null,
-            $data['state'] ?? null,
-            $data['zipcode'],
-            $data['number'] ?? null,
-            $data['complement'] ?? null,
-        ];
+        return new static(
+            customer_id: $data['customer_id'],
+            last_numbers: $data['creditCardNumber'],
+            brand: $data['creditCardBrand'] ?? null,
+            expiry_date: $data['expiry_date'] ?? null,
+            card_holder_name: $data['card_holder_name'] ?? null,
+            token: $data['creditCardToken'] ?? null,
+        );
     }
+
 }

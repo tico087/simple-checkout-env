@@ -47,25 +47,25 @@ class CheckoutControllerTest extends TestCase
         // dd($customer);
 
         $data = [
-            "customer_api_id" => 'cus_000006096246',//$customer['response']['id'],
-            "payment_method" => $method,
-            "due_date" => "2024-10-30",
+            "customerApiId" => 'cus_000006096246',//$customer['response']['id'],
+            "paymentMethod" => $method,
+            "dueDate" => "2024-10-30",
             "amount" => 100,
             "description" => "Pedido 056984",
             "external_reference" => "056984",
-            "total_value" => 100
+            "totalValue" => 100
         ];
 
         if ($method === "credit_card") {
             $creditcard = [
-                "credit_card" => [
-                    "holder_name" => "john doe",
+                "creditcard" => [
+                    "holderName" => "john doe",
                     "number" => "5162306219378829",
-                    "expiry_month" => "05",
-                    "expiry_year" => "2025",
+                    "expiryNonth" => "05",
+                    "expiryYear" => "2025",
                     "ccv" => "318"
                 ],
-                "credit_card_holder" => [
+                "creditCardHolderInfo" => [
                     "name" => "John Doe",
                     "email" => "john.doe@asaas.com.br",
                     "doc_number" => "24971563792",

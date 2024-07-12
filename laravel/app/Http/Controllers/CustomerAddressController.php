@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\DataObjects\CustomerAddressData;
 use App\Models\CustomerAddress;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerAddressController extends Controller

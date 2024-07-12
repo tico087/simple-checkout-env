@@ -10,7 +10,8 @@ class CustomerCreditCard extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['customer_id', 'card_number', 'expiry_date', 'card_holder_name'];
+    // protected $fillable = ['customer_id', 'card_number', 'expiry_date', 'card_holder_name'];
+    protected $guarded = ['created_at', 'updated_at'];
 
     public function customer(): BelongsTo
     {

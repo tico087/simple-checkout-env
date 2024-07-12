@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 
 use App\Services\PaymentService;
-use Illuminate\Http\Resources\Json\JsonResource;
+
+use App\Http\Requests\CheckoutDataRequest;
 use Illuminate\View\View;
 use App\Models\Order;
-use App\DataObjects\PaymentData;
 use Illuminate\Http\JsonResponse;
+use App\DataObjects\PaymentData;
 
 class CheckoutController extends Controller
 {
@@ -24,26 +25,33 @@ class CheckoutController extends Controller
     }
 
 
-    public function process(PaymentData $data): JsonResponse
+
+    public function process(CheckoutDataRequest $request): JsonResponse
     {
         try {
-            $payment = $this->service->processTransaction($data);
-            return new JsonResponse($payment);
+            $payment = $this->service->processTransaction($request);
+            if($payment['success'])
+            {
+                // dd($payment);
+                $data = PaymentData::fromArray($payment);
+                app(PaymentController::class)->processSuccessfulPayment($data);
+                return new JsonResponse($payment);
+            }
+
         } catch (\JsonException $e) {
             report($e);
-            return new JsonResponse(['errors' => ['message' => 'Erro ao processar a Trasanção, Verifique os Dados inseridos ou entre em Contado com o nosso Suporte.']], 400);
+            return new JsonResponse(['errors' => ['message' => 'Erro ao processar a Transação, Verifique os Dados inseridos ou entre em Contato com o nosso Suporte.']], 400);
         } catch (\Exception $e) {
             report($e);
-            return new JsonResponse([
-                'errors' => ['message' => 'Erro ao processar a Trasanção, Verifique os Dados inseridos ou entre em Contado com o nosso Suporte.']
-            ], 500);
+            return new JsonResponse(['errors' => ['message' => 'Erro ao processar a Transação, Verifique os Dados inseridos ou entre em Contato com o nosso Suporte.']], 500);
         }
     }
+
 
     public function thanksPage(int $orderId): View
     {
         $order = Order::findOrFail($orderId);
-        return view('checkout.thanks', ["order" => $orderId]);
+        return view('checkout.thankspage', ["order" => $orderId]);
     }
 
     public function mockProducts(): array

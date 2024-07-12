@@ -22,4 +22,11 @@ class CustomerController extends Controller
         return new JsonResource($customer);
     }
 
+    // @todo verify if exists
+    // public function storeOrUpdate(CustomerData $data, $refer='id', $param = null): JsonResource
+    // {
+    //     $customer = Customer::create($data->toArray());
+    //     return new JsonResource($customer);
+    // }
+
 }

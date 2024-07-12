@@ -13,6 +13,7 @@ class CustomerCreditcardHolderInfoRequestData extends Data
         public string $cpfCnpj,
         public ?string $postalCode,
         public ?string $addressNumber,
+        public ?string $addressComplement,
         public ?string $phone,
         public ?string $mobilePhone,
 
@@ -21,14 +22,21 @@ class CustomerCreditcardHolderInfoRequestData extends Data
 
     public static function fromArray(array $data): static
     {
+        // dd($data);
         return new static(
-            name: $data["name"],
-            email: $data["email"] ?? null,
-            cpfCnpj: $data["doc_number"],
-            postalCode: $data["zipcode"] ?? null,
-            addressNumber: $data["number"] ?? null,
-            phone: $data["phone"] ?? null,
-            mobilePhone: $data["mobile_phone"] ?? null,
+            name: self::getFullname($data),
+            email: $data['info']['email'] ?? null,
+            cpfCnpj: $data['info']['docNumber'],
+            postalCode: $data['address']['zipcode'] ?? null,
+            addressNumber: $data['address']['number'] ?? null,
+            phone: $data['info']['phone'] ?? null,
+            mobilePhone: $data['info']['mobile_phone'] ?? null,
+            addressComplement: $data['address']['complement'] ?? null
         );
+    }
+
+    private static function getFullname(array $data): string {
+
+        return "{$data['info']['firstName']} {$data['info']['lastName']}";
     }
 }

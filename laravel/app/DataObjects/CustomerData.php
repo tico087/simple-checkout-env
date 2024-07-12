@@ -2,9 +2,7 @@
 
 namespace App\DataObjects;
 
-use App\DataObjects\{CustomerCreditCardData};
 use Spatie\LaravelData\Data;
-
 
 class CustomerData extends Data
 {
@@ -13,21 +11,41 @@ class CustomerData extends Data
         public ?string $email,
         public ?string $mobile_phone,
         public ?string $phone,
-        public string $doc,
-        // public ?CustomerCreditCardData $creditcard,
+        public string $doc_number,
+        public ?string $api_id,
     ) {
     }
 
     public static function fromArray(array $data): static
     {
-        // dd($data);
+
         return new static(
-            name: $data['name'],
+            name: self::getFullname($data),
             email: $data['email'] ?? null,
             mobile_phone: $data['mobile_phone'] ?? null,
             phone: $data['phone'] ?? null,
-            doc: $data['doc'],
-            // creditcard: CustomerCreditCardData::fromArray($data['creditcard']) ?? []
+            doc_number: $data['docNumber'],
+            api_id: $data['api_id'] ?? null,
         );
     }
+
+    public static function fromResponse(array $data): static
+    {
+        return new static(
+            name: $data['name'],
+            email: $data['email'] ?? null,
+            mobile_phone: $data['mobilePhone'] ?? null,
+            phone: $data['phone'] ?? null,
+            doc_number: $data['cpfCnpj'],
+            api_id: $data['id'] ?? null,
+        );
+    }
+
+    private static function getFullname(array $data): string {
+
+        return "{$data['firstName']} {$data['lastName']}";
+    }
+
+
+
 }

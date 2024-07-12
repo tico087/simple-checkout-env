@@ -2,7 +2,7 @@
 @php
     $billingType = data_get($payment->form_request, 'payment.billingType');
     $status = data_get($payment->api_response, 'status');
-    // bankSlipUrl
+
 @endphp
 @section('content')
     <div class="container">

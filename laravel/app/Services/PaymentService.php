@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
-use App\DataObjects\CustomerData;
-use App\DataObjects\PaymentData;
+use App\DataObjects\{CustomerData, CustomerAddressData, PaymentData};
 use App\DataObjects\PaymentServiceData\{PaymentRequestData, CustomerRequestData};
+use App\Http\Requests\CheckoutDataRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\PendingRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\DataObjects\MockData\MockData;
+use App\Http\Controllers\{CustomerController, CustomerAddressController};
 use Illuminate\Http\Resources\Json\JsonResource;
-
 
 class PaymentService
 {
@@ -40,45 +41,103 @@ class PaymentService
             ->baseUrl($this->baseUrl);
     }
 
-    public function createCustomer(CustomerData $data): JsonResponse
+    public function createCustomer(CustomerData $data, string $id = null): mixed
     {
         $request = CustomerRequestData::fromArray($data->toArray());
         $response = $this->client->post('customers', $request->toArray());
         if (!$response->successful()) {
             report($response->body(), $response->status());
-            return new JsonResponse($response->body(), $response->status());
+            return $response->body();
         }
-        return new JsonResponse($response->json(), 200);
+
+        $this->storeCustomerInfo($response->json());
+        return $response->json();
+    }
+
+    public function getCustomer(string $id): mixed
+    {
+        $response = $this->client->get("customers/{$id}");
+        if (!$response->successful()) {
+            report($response->body(), $response->status());
+            return $response->body();
+        }
+        $this->storeCustomerInfo($response->json());
+        return $response->json();
     }
 
 
-    public function processTransaction(PaymentData $data): JsonResource
+    private function storeCustomerInfo(array $response): void
     {
-        $request = PaymentRequestData::fromArray($data->toArray());
-        $response = $this->client->post('payments', $request->toArray());
-        $responseData = $response->json();
+        $customerData = CustomerData::fromResponse($response);
+        $customer = app(CustomerController::class)->store($customerData);
+        $response = array_merge($response, ['customer_id' => $customer->id]);
+        $customerAddressData = CustomerAddressData::fromResponse($response);
+        $customer = app(CustomerAddressController::class)->store($customerAddressData);
+    }
+
+
+    public function processTransaction(CheckoutDataRequest $data): array
+    {
+
+        // $customer = $this->createCustomer(CustomerData::fromArray($data->all()['info']));
+        $customer = $this->getCustomer('cus_000006097772');
+        $data = array_merge($data->toArray(), ['customerApiId' => $customer['id']]);
+
+        $request = PaymentRequestData::fromArray($data);
+        if($request->billingType === 'CREDIT_CARD')
+        {
+            $response = (array) MockData::creditcardResponse();
+        }else{
+            $apiResponse = $this->client->post('payments', $request->toArray());
+            $response = $apiResponse->json();
+        }
+
 
         if ($request->billingType === 'PIX') {
-            $pixResponse = $this->getPixQrCode($responseData["id"]);
-            $responseData = array_merge($responseData, ["qrCode" => $pixResponse]);
+            $pixResponse = $this->getPixQrCode($response["id"]);
+            $response = array_merge($response, ["qrCode" => $pixResponse]);
         }
 
-        return new JsonResource([
-            'response' => $responseData,
-            'request' => $data->toArray()
-        ]);
+        $success = $this->validateResponse($response);
+
+        return [
+            'response' => $response,
+            'request' => $request,
+            'success' => $success['success'],
+            'redirect' => $success['redirect'] ?? null,
+            'error' => $success['error'] ?? null,
+        ];
     }
 
-    public function getPixQrCode(string $id): JsonResponse
+
+    private function getPixQrCode(string $id): JsonResponse
     {
-        $response = $this->client->get("payments/$id/pixQrCode", [
-            "type" => "EVP"
-        ]);
+        $response = $this->client->get("payments/$id/pixQrCode", ["type" => "EVP"]);
 
         if (!$response->json('success')) {
             report($response->body(), $response->status());
-            return new JsonResponse($response->body(), $response->status());
+            return new JsonResponse(['success' => false, 'error' => $response->body()], $response->status());
         }
-        return new JsonResponse($response->json(), 200);
+
+        return new JsonResponse(['success' => true, 'qrCode' => $response->json()], 200);
     }
+
+
+    private function validateResponse(array $response): array
+    {
+        if (isset($response['errors']) && is_array($response['errors']) && count($response['errors']) > 0) {
+            return [
+                "success" => false,
+                "error" => "Erro ao processar a Transação, Verifique os Dados inseridos ou entre em Contato com o nosso Suporte."
+            ];
+        }
+
+        return [
+            'success' => true,
+            'redirect' => route('checkout.thankspage', ["order_id" => 1])
+        ];
+    }
+
+
+
 }

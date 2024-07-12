@@ -13,8 +13,11 @@ return new class extends Migration
             $table->string('payment_method');
             $table->decimal('amount', 10, 2);
             $table->string('status');
+
+            $table->date('due_date')->nullable();
+            $table->integer('installments')->default(1);
             $table->string('transaction_id');
-            $table->string('payment_link')->nullable();
+            $table->string('bankslip_url')->nullable();
             $table->string('qr_code')->nullable();
             $table->unsignedBigInteger('customer_credit_card_id')->nullable();
             $table->foreign('customer_credit_card_id')->references('id')->on('customer_credit_cards')->onDelete('set null');

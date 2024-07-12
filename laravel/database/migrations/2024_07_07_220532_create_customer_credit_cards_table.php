@@ -12,9 +12,10 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->string('card_number');
-            $table->string('expiry_date');
-            $table->string('card_holder_name');
+            $table->string('last_numbers');
+            $table->string('brand')->nullable();
+            $table->string('expiry_date')->nullable();
+            $table->string('card_holder_name')->nullable();
             $table->string('token')->nullable();
             $table->timestamps();
         });

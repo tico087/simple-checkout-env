@@ -10,7 +10,7 @@ class Customer extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone'];
+    protected $guarded = ['created_at', 'updated_at'];
 
     public function orders(): hasMany
     {
