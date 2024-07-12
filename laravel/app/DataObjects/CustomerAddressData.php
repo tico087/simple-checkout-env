@@ -7,12 +7,12 @@ use Spatie\LaravelData\Data;
 class CustomerAddressData extends Data
 {
     public function __construct(
-        public int $customer_id,
+        public ?int $customer_id,
         public ?string $address,
         public ?string $city,
         public ?string $neighborhood,
         public ?string $state,
-        public string $zipcode,
+        public ?string $zipcode,
         public ?string $number,
         public ?string $complement
     ) {
@@ -21,12 +21,12 @@ class CustomerAddressData extends Data
     public static function fromArray(array $data): static
     {
         return new static(
-            customer_id: $data['customer_id'],
+            customer_id: $data['customer_id'] ?? null,
             address: $data['address'] ?? null,
             neighborhood: $data['neighborhood'] ?? null,
             city: $data['city'] ?? null,
             state: $data['state'] ?? null,
-            zipcode: $data['zipcode'],
+            zipcode: $data['zipcode'] ?? null,
             number: $data['number'] ?? null,
             complement: $data['complement'] ?? null,
         );
@@ -36,12 +36,12 @@ class CustomerAddressData extends Data
     public static function fromResponse(array $data): static
     {
         return new static(
-            customer_id: $data['customer_id'],
-            address: $data['address'] ?? null,
+            customer_id: $data['customer_id'] ?? null,
+            address: $data['address'] ?? null ,
             neighborhood: $data['province'] ?? null,
             city: $data['cityName'] ?? null,
             state: $data['state'] ?? null,
-            zipcode: $data['postalCode'],
+            zipcode: $data['postalCode'] ?? null,
             number: $data['addressNumber'] ?? null,
             complement: $data['complement'] ?? null,
         );

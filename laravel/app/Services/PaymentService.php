@@ -42,7 +42,7 @@ class PaymentService
             ->baseUrl($this->baseUrl);
     }
 
-    public function createCustomer(CustomerData $data, string $id = null): mixed
+    public function createCustomer(CustomerData $data): mixed
     {
         $request = CustomerRequestData::fromArray($data->toArray());
         $response = $this->client->post('customers', $request->toArray());
@@ -50,7 +50,6 @@ class PaymentService
             report($response->body(), $response->status());
             return $response->body();
         }
-
         $this->storeCustomerInfo($response->json());
         return $response->json();
     }
@@ -72,7 +71,6 @@ class PaymentService
         $customerData = CustomerData::fromResponse($response);
         $this->customer = app(CustomerController::class)->store($customerData);
         $response = array_merge($response, ['customer_id' => $this->customer->id]);
-
         $customerAddressData = CustomerAddressData::fromResponse($response);
         app(CustomerAddressController::class)->store($customerAddressData);
     }

@@ -87,7 +87,7 @@
             <input
               type="text"
               class="form-control"
-              v-model="form.address.zipCode"
+              v-model="form.address.zipcode"
               @change="getAddress"
             />
           </div>
@@ -296,7 +296,7 @@ export default {
         },
         address: {
           number: "",
-          zipCode: "",
+          zipcode: "",
           address: "",
           neighborhood: "",
           city: "",
@@ -340,7 +340,7 @@ export default {
             },
             address: {
               number: "308",
-              zipCode: "89223005",
+              zipcode: "89223005",
               address: "Alameda Negra Arroyo",
               neighborhood: "Los Ranchos de Albuquerque",
               city: "Albuquerque",
@@ -354,7 +354,7 @@ export default {
   },
   methods: {
     getAddress() {
-      const onlyNumbers = this.form.address.zipCode.replace(/\D/g, "");
+      const onlyNumbers = this.form.address.zipcode.replace(/\D/g, "");
       fetch(`https://viacep.com.br/ws/${onlyNumbers}/json/`)
         .then((response) => {
           if (!response.ok) {

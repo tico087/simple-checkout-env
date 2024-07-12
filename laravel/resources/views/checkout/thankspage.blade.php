@@ -1,7 +1,8 @@
 @extends('templates.default')
 @php
-    $billingType = data_get($payment->form_request, 'payment.billingType');
-    $status = data_get($payment->api_response, 'status');
+
+    $billingType = $payment->payment_method;
+    $status = $payment->status;
 
 @endphp
 @section('content')
@@ -19,7 +20,7 @@
                     @endif
                     <br>
                     <small>
-                        <a target="_blank" href="{{ data_get($payment->api_response, 'invoiceUrl') }}">Detalhes do
+                        <a target="_blank" href="{{ $payment->invoice_url ?? null }}">Detalhes do
                             pagamento</a>
                     </small>
                 @elseif ($billingType === 'BOLETO')
@@ -30,7 +31,7 @@
                     @endif
                     <br />
                     <small class="text-muted">
-                        <a target="_blank" href="{{ data_get($payment->api_response, 'bankSlipUrl') }}">Visualizar o
+                        <a target="_blank" href="{{ $payment->bankslip_url ?? null}}">Visualizar o
                             boleto</a>
                     </small>
                 @elseif ($billingType === 'PIX')
@@ -41,11 +42,11 @@
                         efetuar pagamento.
                         <br />
                         <img class="my-4"
-                            src="data:image/png;base64, {{ data_get($payment->api_response, 'qrCode.encodedImage') }}"
+                            src="data:image/png;base64, {{ $payment->qr_code->encoded_image  ?? null }}"
                             width="200" height="200" />
                         <br />
                         <small class="mt-4 text-muted">
-                            <copy-link value="{{ data_get($payment->api_response, 'qrCode.payload') }}"></copy-link>
+                            <copy-link value="{{ $payment->qr_code }}"></copy-link>
                         </small>
                     @endif
                 @endif
