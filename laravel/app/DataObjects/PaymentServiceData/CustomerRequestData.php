@@ -27,12 +27,13 @@ class CustomerRequestData extends Data
 
     public static function fromArray(array $data): static
     {
+
         return new static(
             name: $data["name"],
             email: $data["email"] ?? null,
             phone: $data["phone"] ?? null,
             mobilePhone: $data["mobilePhone"] ?? null,
-            cpfCnpj: $data["doc"],
+            cpfCnpj: $data["doc_number"],
             postalCode: $data["zipcode"] ?? null,
             address: $data["address"] ?? null,
             addressNumber: $data["number"] ?? null,
