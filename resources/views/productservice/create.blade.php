@@ -85,13 +85,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input type" id="customRadio7" name="grams" value="1" >
+                                <input type="radio" class="form-check-input" id="customRadio7" name="grams" value="1" >
                                 <label class="custom-control-label form-label" for="customRadio7">Sim</label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-check form-check-inline">
-                                <input type="radio" class="form-check-input type" id="customRadio8" name="grams" value="0" >
+                                <input type="radio" class="form-check-input" id="customRadio8" name="grams" value="0" >
                                 <label class="custom-control-label form-label" for="customRadio8">Não</label>
                             </div>
                         </div>
