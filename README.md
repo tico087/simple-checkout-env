@@ -87,6 +87,7 @@ Mencione as ferramentas que você usou para criar seu projeto
 * [Asaas](https://sandbox.asaas.com/) - Integração de pagamentos
 * [MariaDB](https://mariadb.org/) - Bancdo de dados
 * [Vue](https://vuejs.org/) - Framework Javascript - Versão 3.x
+* [Nginx](https://nginx.org/en/) - HTTP Server
 
 
 ## ✒️ Autores
