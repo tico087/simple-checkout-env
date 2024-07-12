@@ -13,8 +13,7 @@ return new class extends Migration
             $table->string('payment_method');
             $table->decimal('amount', 10, 2);
             $table->string('status');
-
-            $table->date('due_date')->nullable();
+            // $table->timestamp('due_date')->nullable();
             $table->integer('installments')->default(1);
             $table->string('transaction_id');
             $table->string('bankslip_url')->nullable();

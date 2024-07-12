@@ -51,4 +51,14 @@ class MockData extends Data
 
         return (object) json_decode($jsonString, true);
     }
+
+    public static function mockProducts(): array
+    {
+        return [
+            'items' => [
+                ['name' => 'Aspirador', 'price' => 237.90, 'id' => 456],
+                ['name' => 'Tapete Médio', 'price' => 180.27, 'id' => 841],
+            ]
+        ];
+    }
 }

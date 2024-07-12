@@ -7,7 +7,7 @@
 @section('content')
     <div class="container">
         <div class="py-5 text-center">
-            <img class="d-block mx-auto mb-4" src="{{ asset('/logo.png') }}" alt="" width="72" height="72">
+
             <h1>Obrigado !</h1>
             <p class="lead">
                 Sua compra foi <strong>finalizada</strong><br>

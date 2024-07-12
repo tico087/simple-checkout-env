@@ -8,7 +8,6 @@ class OrderData extends Data
 {
     public function __construct(
         public int $customer_id,
-        public int $payment_id,
         public string $status
     ) {
     }
@@ -17,7 +16,6 @@ class OrderData extends Data
     {
         return new static(
             customer_id: $data['customer_id'],
-            payment_id: $data['payment_id'],
             status: $data['status'],
 
         );
@@ -27,7 +25,6 @@ class OrderData extends Data
     {
         return new static(
             customer_id: $data['customer_id'],
-            payment_id: $data['payment_id'],
             status: $data['status'],
 
         );

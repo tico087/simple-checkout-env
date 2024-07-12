@@ -7,9 +7,10 @@ use App\Services\PaymentService;
 
 use App\Http\Requests\CheckoutDataRequest;
 use Illuminate\View\View;
-use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\Http\JsonResponse;
 use App\DataObjects\PaymentData;
+use App\DataObjects\MockData\MockData;
 
 class CheckoutController extends Controller
 {
@@ -20,7 +21,7 @@ class CheckoutController extends Controller
 
     public function index(): View
     {
-        $products = $this->mockProducts();
+        $products = MockData::mockProducts();
         return view('checkout.index', compact('products'));
     }
 
@@ -28,12 +29,13 @@ class CheckoutController extends Controller
 
     public function process(CheckoutDataRequest $request): JsonResponse
     {
+
         try {
             $payment = $this->service->processTransaction($request);
-            if($payment['success'])
-            {
-                // dd($payment);
-                $data = PaymentData::fromArray($payment);
+            if ($payment['success']) {
+
+                $payment = array_merge($payment ,['form_request' => $request->json()]);
+                $data = PaymentData::fromRespose($payment);
                 app(PaymentController::class)->processSuccessfulPayment($data);
                 return new JsonResponse($payment);
             }
@@ -48,19 +50,10 @@ class CheckoutController extends Controller
     }
 
 
-    public function thanksPage(int $orderId): View
+    public function thanksPage(string $id): View
     {
-        $order = Order::findOrFail($orderId);
-        return view('checkout.thankspage', ["order" => $orderId]);
+        $payment = Payment::where('transaction_id', $id)->first();
+        return view('checkout.thankspage', compact('payment'));
     }
 
-    public function mockProducts(): array
-    {
-        return [
-            'items' => [
-                ['name' => 'Aspirador', 'price' => 237.90, 'id' => 456],
-                ['name' => 'Tapete Médio', 'price' => 180.27, 'id' => 841],
-            ]
-        ];
-    }
 }

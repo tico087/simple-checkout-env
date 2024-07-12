@@ -17,7 +17,7 @@ Você precisará das seguintes ferramentas instaladas na sua máquina para rodar
 
 Siga os passos abaixo para configurar o ambiente de desenvolvimento:
 
-1. Clone o repositório:
+* #### 1. Clone o repositório:
 via HTTP 
 ```
 $ git clone https://github.com/usuario/perfect-pay-v2.git
@@ -29,18 +29,18 @@ $ git clone git@github.com:tico087/perfect-pay-env.git
 ```
 obs: via SSH é necessério adicionar uma chave pública (https://github.com/settings/ssh/new)
 
-2. Vá para o diretótio onde o projeto foi clonado
+* #### 2. Vá para o diretótio onde o projeto foi clonado
 
 ```
 $ cd perfect-pay-env
 ```
-3. Copie o arquivo .env.example para .env e ajuste as variáveis de ambiente conforme necessário:
+* #### 3. Copie o arquivo .env.example para .env e ajuste as variáveis de ambiente conforme necessário:
 
 ```
 $ cp .env.example .env
 ```
 
-4. Configure o banco de dados e a sua chave Asaas no .env 
+* #### 4. Configure o banco de dados e a sua chave Asaas no .env 
 
 ```
 DB_CONNECTION=mysql
@@ -53,7 +53,7 @@ DB_PASSWORD=123
 ASAAS_API_KEY="SUA_API_KEY"
 ```
 
-5. Dentro diretório do projeto rode o script setup_and_start.sh
+* #### 5. Dentro diretório do projeto rode o script setup_and_start.sh
 
 ```
 bash setup_and_start.sh
@@ -76,6 +76,23 @@ ou
 ::1 	    laravel
 
 ```
+
+## ⚙️ Executando os testes
+
+#### Para executar os testes automatizados, utilize o comando abaixo:
+
+```
+$ docker-compose exec app php artisan test
+```
+
+#### Para executar testes no checkout, no navegador, abre a Ferramente de Desenvolvedor *(F12 ou  Ctrl + Shit + i)*, na aba console execute o comandos.
+
+```
+test() // para testes de compras aprovadas (cartão de credito, boletoe pix)
+test('error') // para testes de compras recusadas (somente para compras com cartão de credito)    
+```
+
+esses comandos irão preencher o formulário automaticamente.
 
 ## 🛠️ Construído com
 

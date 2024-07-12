@@ -19,6 +19,7 @@ class PaymentService
     private string $mode;
     private string $baseUrl;
     private array $headers;
+    private JsonResource  $customer;
     private PendingRequest $client;
 
     public function __construct()
@@ -69,10 +70,11 @@ class PaymentService
     private function storeCustomerInfo(array $response): void
     {
         $customerData = CustomerData::fromResponse($response);
-        $customer = app(CustomerController::class)->store($customerData);
-        $response = array_merge($response, ['customer_id' => $customer->id]);
+        $this->customer = app(CustomerController::class)->store($customerData);
+        $response = array_merge($response, ['customer_id' => $this->customer->id]);
+
         $customerAddressData = CustomerAddressData::fromResponse($response);
-        $customer = app(CustomerAddressController::class)->store($customerAddressData);
+        app(CustomerAddressController::class)->store($customerAddressData);
     }
 
 
@@ -102,6 +104,7 @@ class PaymentService
 
         return [
             'response' => $response,
+            'customer_id' =>  $this->customer->id,
             'request' => $request,
             'success' => $success['success'],
             'redirect' => $success['redirect'] ?? null,
@@ -134,7 +137,7 @@ class PaymentService
 
         return [
             'success' => true,
-            'redirect' => route('checkout.thankspage', ["order_id" => 1])
+            'redirect' => route('checkout.thankspage', ["transaction_id" => $response['id'] ])
         ];
     }
 
