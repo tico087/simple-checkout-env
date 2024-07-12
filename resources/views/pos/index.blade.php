@@ -559,15 +559,15 @@
 
                         if (data.code == '200') {
 
-                            if (quantity == 0) {
-                                ele.closest(".row").hide(250, function() {
-                                    ele.closest(".row").remove();
-                                });
-                                if (ele.closest(".row").is(":last-child")) {
-                                    $('#btn-pur button').attr('disabled', 'disabled');
-                                    $('.btn-empty button').removeClass('btn-clear-cart');
-                                }
-                            }
+                            // if (quantity == 0) {
+                            //     ele.closest(".row").hide(250, function() {
+                            //         ele.closest(".row").remove();
+                            //     });
+                            //     if (ele.closest(".row").is(":last-child")) {
+                            //         $('#btn-pur button').attr('disabled', 'disabled');
+                            //         $('.btn-empty button').removeClass('btn-clear-cart');
+                            //     }
+                            // }
 
                             $.each(data.product, function(key, value) {
                                 sum += value.subtotal;

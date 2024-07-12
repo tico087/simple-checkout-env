@@ -740,7 +740,7 @@ class ProductServiceController extends Controller
 
     public function updateCart(Request $request)
     {   
-
+        
 
         $productServices = ProductService::where('id', '=', $request->id)->first();
 
@@ -755,10 +755,9 @@ class ProductServiceController extends Controller
         if (Auth::user()->can('manage product & service') && $request->ajax() && isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
             $cart = session()->get($session_key);
 
-
-            if (isset($cart[$id]) && $quantity == 0) {
-                unset($cart[$id]);
-            }
+            // if (isset($cart[$id]) && $quantity == 0) {
+            //     unset($cart[$id]);
+            // }
 
 
             if ($quantity) {
