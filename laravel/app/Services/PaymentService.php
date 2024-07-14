@@ -79,8 +79,8 @@ class PaymentService
     public function processTransaction(CheckoutDataRequest $data): array
     {
 
-        $customer = $this->createCustomer(CustomerData::fromArray($data->all()['info']));
-        // $customer = $this->getCustomer('cus_000006097772');
+        // $customer = $this->createCustomer(CustomerData::fromArray($data->all()['info']));
+        $customer = $this->getCustomer('cus_000006097772');
         $data = array_merge($data->toArray(), ['customerApiId' => $customer['id']]);
 
         $request = PaymentRequestData::fromArray($data);

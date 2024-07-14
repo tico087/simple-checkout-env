@@ -22,6 +22,7 @@ class PaymentData extends Data
         public ?int $installments,
         public ?string $bankslip_url,
         public ?array $qr_code,
+        public ?string $invoice_url,
         public ?int $customer_credit_card_id,
         public ?int $order_id,
         public ?array $form_request,
@@ -46,7 +47,8 @@ class PaymentData extends Data
             transaction_id: $data['transaction_id'],
             // due_date: isset($data['due_date']) ? Carbon::createFromFormat('Y-m-d', $data['due_date']) : null,
             installments: $data['installments'] ?? null,
-            bankslip_url: $data['bankSlipUrl'] ?? null,
+            bankslip_url: $data['bankslip_url'] ?? null,
+            invoice_url: $data['invoice_url'] ?? null,
             qr_code: $data['qr_code'] ?? null,
             customer_credit_card_id: $data['customer_credit_card_id'] ?? 1,
             order_id: $data['order_id'] ?? null,
@@ -61,7 +63,6 @@ class PaymentData extends Data
     public static function fromRespose(array $data): static
     {
 
-
         return new static(
             payment_method: $data['response']['billingType'],
             amount: $data['response']['value'],
@@ -71,6 +72,7 @@ class PaymentData extends Data
             // due_date: isset($data['response']['dueDate']) ? Carbon::createFromFormat('Y-m-d', $data['response']['dueDate']) : null,
             installments: is_int($data['response']['installmentNumber']) ?: 1,
             bankslip_url: $data['response']['bankSlipUrl'] ?? null,
+            invoice_url: $data['response']['invoiceUrl'] ?? null,
             qr_code: $data['response']['qr_code'] ?? null,
             customer_credit_card_id: $data['response']['customer_credit_card_id'] ?? null,
             order_id: $data['response']['order_id'] ?? null,

@@ -20,6 +20,7 @@
                     @endif
                     <br>
                     <small>
+
                         <a target="_blank" href="{{ $payment->invoice_url ?? null }}">Detalhes do
                             pagamento</a>
                     </small>
