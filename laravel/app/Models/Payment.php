@@ -13,6 +13,7 @@ class Payment extends Model
 
     protected $guarded = ['created_at', 'updated_at'];
     protected $casts = [
+        'qr_code' => 'json',
         'form_request' => 'json',
         'api_request' => 'json',
         'api_response' => 'json',

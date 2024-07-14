@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('installments')->default(1);
             $table->string('transaction_id');
             $table->string('bankslip_url')->nullable();
-            $table->string('qr_code')->nullable();
+            $table->json('qr_code')->nullable();
             $table->unsignedBigInteger('customer_credit_card_id')->nullable();
             $table->foreign('customer_credit_card_id')->references('id')->on('customer_credit_cards')->onDelete('set null');
             $table->unsignedBigInteger('order_id');

@@ -84,10 +84,9 @@ class PaymentService
         $data = array_merge($data->toArray(), ['customerApiId' => $customer['id']]);
 
         $request = PaymentRequestData::fromArray($data);
-        if($request->billingType === 'CREDIT_CARD')
-        {
+        if ($request->billingType === 'CREDIT_CARD') {
             $response = (array) MockData::creditcardResponse();
-        }else{
+        } else {
             $apiResponse = $this->client->post('payments', $request->toArray());
             $response = $apiResponse->json();
         }
@@ -95,9 +94,8 @@ class PaymentService
 
         if ($request->billingType === 'PIX') {
             $pixResponse = $this->getPixQrCode($response["id"]);
-            $response = array_merge($response, ["qrCode" => $pixResponse]);
+            $response = array_merge($response, ["qr_code" => $pixResponse]);
         }
-
         $success = $this->validateResponse($response);
 
         return [
@@ -111,7 +109,7 @@ class PaymentService
     }
 
 
-    private function getPixQrCode(string $id): JsonResponse
+    private function getPixQrCode(string $id): array
     {
         $response = $this->client->get("payments/$id/pixQrCode", ["type" => "EVP"]);
 
@@ -120,7 +118,11 @@ class PaymentService
             return new JsonResponse(['success' => false, 'error' => $response->body()], $response->status());
         }
 
-        return new JsonResponse(['success' => true, 'qrCode' => $response->json()], 200);
+        return [
+            'encodedImage' => $response->json()['encodedImage'],
+            'payload' => $response->json()['payload'],
+            'expirationDate' => $response->json()['payload'],
+        ];
     }
 
 
@@ -135,10 +137,7 @@ class PaymentService
 
         return [
             'success' => true,
-            'redirect' => route('checkout.thankspage', ["transaction_id" => $response['id'] ])
+            'redirect' => route('checkout.thankspage', ["transaction_id" => $response['id']])
         ];
     }
-
-
-
 }

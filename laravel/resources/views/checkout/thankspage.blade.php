@@ -42,18 +42,18 @@
                         efetuar pagamento.
                         <br />
                         <img class="my-4"
-                            src="data:image/png;base64, {{ $payment->qr_code->encoded_image  ?? null }}"
+                            src="data:image/png;base64, {{ $payment->qr_code['encodedImage']  ?? null }}"
                             width="200" height="200" />
                         <br />
+
                         <small class="mt-4 text-muted">
-                            <copy-link value="{{ $payment->qr_code }}"></copy-link>
+                            <copy-link value="{{  $payment->qr_code['payload'] }}"></copy-link>
                         </small>
                     @endif
                 @endif
 
             </p>
         </div>
-
         <footer class="my-5 pt-5 text-muted text-center text-small">
             <p class="mb-1">© {{ now()->year }} {{ config('app.name') }}</p>
         </footer>
