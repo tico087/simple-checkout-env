@@ -10,7 +10,7 @@ class MockData extends Data
     {
     }
 
-    public static function creditcardResponse(): object
+    public static function creditcardConfirmedResponse(): object
     {
         $jsonString = '{
             "object": "payment",
@@ -51,6 +51,22 @@ class MockData extends Data
 
         return (object) json_decode($jsonString, true);
     }
+
+    public static function creditcardRefusedResponse(): object
+    {
+        $jsonString = '{
+            "errors": [
+              {
+                "code": "invalid_customer",
+                "description": "Customer inválido ou não informado."
+              }
+            ]
+          }';
+
+          return (object) json_decode($jsonString, true);
+    }
+
+
 
     public static function mockProducts(): array
     {

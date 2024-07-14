@@ -37,8 +37,8 @@ class CheckoutController extends Controller
                 $payment = array_merge($payment ,['form_request' => $request->json()]);
                 $data = PaymentData::fromRespose($payment);
                 app(PaymentController::class)->processSuccessfulPayment($data);
-                return new JsonResponse($payment);
             }
+            return new JsonResponse($payment);
 
         } catch (\JsonException $e) {
             report($e);

@@ -79,13 +79,19 @@ class PaymentService
     public function processTransaction(CheckoutDataRequest $data): array
     {
 
-        // $customer = $this->createCustomer(CustomerData::fromArray($data->all()['info']));
-        $customer = $this->getCustomer('cus_000006097772');
+        $customer = $this->createCustomer(CustomerData::fromArray($data->all()['info']));
+        // $customer = $this->getCustomer('cus_000006097772');
         $data = array_merge($data->toArray(), ['customerApiId' => $customer['id']]);
 
         $request = PaymentRequestData::fromArray($data);
         if ($request->billingType === 'CREDIT_CARD') {
-            $response = (array) MockData::creditcardResponse();
+            if($request->creditCard->number === '5184019740373151')
+            {
+                $response = (array) MockData::creditcardRefusedResponse();
+            }else{
+                $response = (array) MockData::creditcardConfirmedResponse();
+            };
+
         } else {
             $apiResponse = $this->client->post('payments', $request->toArray());
             $response = $apiResponse->json();
@@ -128,7 +134,9 @@ class PaymentService
 
     private function validateResponse(array $response): array
     {
+
         if (isset($response['errors']) && is_array($response['errors']) && count($response['errors']) > 0) {
+
             return [
                 "success" => false,
                 "error" => "Erro ao processar a Transação, Verifique os Dados inseridos ou entre em Contato com o nosso Suporte."
