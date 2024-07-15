@@ -20,7 +20,7 @@ Siga os passos abaixo para configurar o ambiente de desenvolvimento:
 * #### 1. Clone o repositório:
 via HTTP 
 ```
-$ git clone https://github.com/usuario/perfect-pay-v2.git
+$ git clone https://github.com/usuario/perfect-pay-env.git
 ```
 
 Via SSH 
@@ -32,7 +32,7 @@ obs: via SSH é necessério adicionar uma chave pública (https://github.com/set
 * #### 2. Vá para o diretótio onde o projeto foi clonado
 
 ```
-$ cd perfect-pay-env
+$ cd perfect-pay-env/laravel
 ```
 * #### 3. Copie o arquivo .env.example para .env e ajuste as variáveis de ambiente conforme necessário:
 
