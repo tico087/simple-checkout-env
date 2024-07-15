@@ -63,11 +63,11 @@ este script irá iniciar o ambiente docker com todas suas dependencias
 
 o projeto irá se iniciar na url 
 
-[http://(http://laravel:8000/](http://laravel:8000/)
+[http://laravel:8000/](http://laravel:8000/)
 
 ou 
 
-[http://(http://localhost:8000/](http://localhost:8000/)
+[http://localhost:8000/](http://localhost:8000/)
 
 *obs: caso esteja rodando alguma VM no windows ex: WSL2, é necessário configurar o arquivo* hosts -> *C:\Windows\System32\drivers\etc\hosts* 
 
