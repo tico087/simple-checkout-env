@@ -20,24 +20,24 @@ Siga os passos abaixo para configurar o ambiente de desenvolvimento:
 * #### 1. Clone o repositório:
 via HTTP 
 ```
-$ git clone https://github.com/usuario/perfect-pay-env.git
+git clone https://github.com/usuario/perfect-pay-env.git
 ```
 
 Via SSH 
 ```
-$ git clone git@github.com:tico087/perfect-pay-env.git
+git clone git@github.com:tico087/perfect-pay-env.git
 ```
 obs: via SSH é necessério adicionar uma chave pública (https://github.com/settings/ssh/new)
 
 * #### 2. Vá para o diretótio onde o projeto foi clonado
 
 ```
-$ cd perfect-pay-env/laravel
+cd perfect-pay-env/laravel
 ```
 * #### 3. Copie o arquivo .env.example para .env e ajuste as variáveis de ambiente conforme necessário:
 
 ```
-$ cp .env.example .env
+cp .env.example .env
 ```
 
 * #### 4. Configure o banco de dados e a sua chave Asaas no .env 
@@ -82,7 +82,7 @@ ou
 #### Para executar os testes automatizados, utilize o comando abaixo:
 
 ```
-$ docker-compose exec app php artisan test
+docker-compose exec app php artisan test
 ```
 
 #### Para executar testes no checkout, no navegador, abre a Ferramente de Desenvolvedor *(F12 ou  Ctrl + Shit + i)*, na aba console execute o comandos.
