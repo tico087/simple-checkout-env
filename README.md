@@ -56,7 +56,7 @@ ASAAS_API_KEY="SUA_API_KEY"
 * #### 5. Dentro diretório do projeto rode o script setup_and_start.sh
 
 ```
-bash setup_and_start.sh
+cd .. && bash setup_and_start.sh
 ```
 
 este script irá iniciar o ambiente docker com todas suas dependencias 
@@ -82,7 +82,7 @@ ou
 #### Para executar os testes automatizados, utilize o comando abaixo:
 
 ```
-docker-compose exec app php artisan test
+cd laravel && docker exec -it laravel php artisan test
 ```
 
 #### Para executar testes no checkout, no navegador, abre a Ferramente de Desenvolvedor *(F12 ou  Ctrl + Shit + i)*, na aba console execute o comandos.

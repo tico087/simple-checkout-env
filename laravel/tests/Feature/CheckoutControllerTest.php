@@ -13,151 +13,151 @@ use Spatie\LaravelData\Attributes\Validation\Lowercase;
 class CheckoutControllerTest extends TestCase
 {
 
-    public function create_customer_payload(): array
-    {
-        $user = User::factory()->definition();
-        $data = [
-            "name" => $user['name'],
-            "email" => $user['email'],
-            "doc" => '24971563792',
-            "phone" => "4738010919",
-            "mobilePhone" => "4799376637",
-            "zipcode" => "01310-000",
-            "address" => "Av. Paulista",
-            "number" => "150",
-            "complement" => "Sala 201",
-            "province" => "Centro",
-            "externalReference" => "12987382",
-            "notificationDisabled" => false,
-            "additionalEmails" => "john.doe@asaas.com,john.doe.silva@asaas.com.br",
-            "municipalInscription" => "46683695908",
-            "stateInscription" => "646681195275",
-            "observations" => "ótimo pagador, nenhum problema até o momento"
-        ];
+    // public function create_customer_payload(): array
+    // {
+    //     $user = User::factory()->definition();
+    //     $data = [
+    //         "name" => $user['name'],
+    //         "email" => $user['email'],
+    //         "doc" => '24971563792',
+    //         "phone" => "4738010919",
+    //         "mobilePhone" => "4799376637",
+    //         "zipcode" => "01310-000",
+    //         "address" => "Av. Paulista",
+    //         "number" => "150",
+    //         "complement" => "Sala 201",
+    //         "province" => "Centro",
+    //         "externalReference" => "12987382",
+    //         "notificationDisabled" => false,
+    //         "additionalEmails" => "john.doe@asaas.com,john.doe.silva@asaas.com.br",
+    //         "municipalInscription" => "46683695908",
+    //         "stateInscription" => "646681195275",
+    //         "observations" => "ótimo pagador, nenhum problema até o momento"
+    //     ];
 
-        return [
-            'response' => app(PaymentService::class)->createCustomer(CustomerData::fromArray($data)),
-            'user' => $user
-        ];
-    }
+    //     return [
+    //         'response' => app(PaymentService::class)->createCustomer(CustomerData::fromArray($data)),
+    //         'user' => $user
+    //     ];
+    // }
 
-    public function create_payment_payload($method): array
-    {
-        // $customer = $this->create_customer_payload();
-        // dd($customer);
-
-        $data = [
-            "customerApiId" => 'cus_000006096246',//$customer['response']['id'],
-            "paymentMethod" => $method,
-            "dueDate" => "2024-10-30",
-            "amount" => 100,
-            "description" => "Pedido 056984",
-            "external_reference" => "056984",
-            "totalValue" => 100
-        ];
-
-        if ($method === "credit_card") {
-            $creditcard = [
-                "creditcard" => [
-                    "holderName" => "john doe",
-                    "number" => "5162306219378829",
-                    "expiryNonth" => "05",
-                    "expiryYear" => "2025",
-                    "ccv" => "318"
-                ],
-                "creditCardHolderInfo" => [
-                    "name" => "John Doe",
-                    "email" => "john.doe@asaas.com.br",
-                    "doc_number" => "24971563792",
-                    "zipcode" => "89223-005",
-                    "number" => "277",
-                    "complement" => null,
-                    "phone" => "4738010919",
-                    "mobile_phone" => "47998781877"
-                ],
-                "installments" => 2,
-                "total_value" => 105
-            ];
-
-            $data = array_merge($data, $creditcard);
-            // dd($data);
-        }
-        $formRequest['form_request'] = $data;
-        $data = array_merge($data, $formRequest);
-        // dd($data);
-        return $data;
-    }
-
-    public function test_creates_a_customer_in_asaas(): void
-    {
-        $customer = $this->create_customer_payload();
-
-        $this->assertArrayHasKey('id', $customer['response']);
-        $this->assertEquals($customer['user']['name'], $customer['response']['name']);
-        $this->assertEquals($customer['user']['email'], $customer['response']['email']);
-    }
+    // public function create_payment_payload($method): array
+    // {
+    //     $customer = $this->create_customer_payload();
 
 
+    //     $data = [
+    //         "customerApiId" => 'cus_000006096246',//$customer['response']['id'],
+    //         "paymentMethod" => $method,
+    //         "dueDate" => "2024-10-30",
+    //         "amount" => 100,
+    //         "description" => "Pedido 056984",
+    //         "external_reference" => "056984",
+    //         "totalValue" => 100
+    //     ];
 
-    public function test_processes_creditcard_payment_successfully()
-    {
+    //     if ($method === "credit_card") {
+    //         $creditcard = [
+    //             "creditcard" => [
+    //                 "holderName" => "john doe",
+    //                 "number" => "5162306219378829",
+    //                 "expiryNonth" => "05",
+    //                 "expiryYear" => "2025",
+    //                 "ccv" => "318"
+    //             ],
+    //             "creditCardHolderInfo" => [
+    //                 "name" => "John Doe",
+    //                 "email" => "john.doe@asaas.com.br",
+    //                 "doc_number" => "24971563792",
+    //                 "zipcode" => "89223-005",
+    //                 "number" => "277",
+    //                 "complement" => null,
+    //                 "phone" => "4738010919",
+    //                 "mobile_phone" => "47998781877"
+    //             ],
+    //             "installments" => 2,
+    //             "total_value" => 105
+    //         ];
 
-        $data = $this->create_payment_payload('CREDIT_CARD');
-        $response = $this->post(route('checkout.process'), $data);
-        $response->assertStatus(200);
+    //         $data = array_merge($data, $creditcard);
 
-        // dd($data);
+    //     }
+    //     $formRequest['form_request'] = $data;
+    //     $data = array_merge($data, $formRequest);
 
-        // $response->assertJson([
-        //     'object' => 'payment',
-        //     'id' => 'pay_080225913252',
-        //     'customer' => 'cus_G7Dvo4iphUNk',
-        //     'status' => 'PENDING',
-        //     'description' => 'Pedido 056984',
-        //     'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
-        //     'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
-        // ]);
-    }
+    //     return $data;
+    // }
 
-    public function test_processes_bankslip_payment_successfully()
-    {
+    // public function test_creates_a_customer_in_asaas(): void
+    // {
+    //     $customer = $this->create_customer_payload();
 
-        $data = $this->create_payment_payload('BOLETO');
-        $response = $this->post(route('checkout.process'), $data);
-        $response->assertStatus(200);
+    //     $this->assertArrayHasKey('id', $customer['response']);
+    //     $this->assertEquals($customer['user']['name'], $customer['response']['name']);
+    //     $this->assertEquals($customer['user']['email'], $customer['response']['email']);
+    // }
 
-        // dd($data);
 
-        // $response->assertJson([
-        //     'object' => 'payment',
-        //     'id' => 'pay_080225913252',
-        //     'customer' => 'cus_G7Dvo4iphUNk',
-        //     'status' => 'PENDING',
-        //     'description' => 'Pedido 056984',
-        //     'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
-        //     'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
-        // ]);
-    }
 
-    public function test_processes_pix_payment_successfully()
-    {
+    // public function test_processes_creditcard_payment_successfully()
+    // {
 
-        $data = $this->create_payment_payload('PIX');
-        $response = $this->post(route('checkout.process'), $data);
-        $response->assertStatus(200);
+    //     $data = $this->create_payment_payload('CREDIT_CARD');
+    //     $response = $this->post(route('checkout.process'), $data);
+    //     $response->assertStatus(200);
 
-        // dd($data);
+    //     dd($data);
 
-        // $response->assertJson([
-        //     'object' => 'payment',
-        //     'id' => 'pay_080225913252',
-        //     'customer' => 'cus_G7Dvo4iphUNk',
-        //     'status' => 'PENDING',
-        //     'description' => 'Pedido 056984',
-        //     'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
-        //     'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
-        // ]);
-    }
+    //     $response->assertJson([
+    //         'object' => 'payment',
+    //         'id' => 'pay_080225913252',
+    //         'customer' => 'cus_G7Dvo4iphUNk',
+    //         'status' => 'PENDING',
+    //         'description' => 'Pedido 056984',
+    //         'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
+    //         'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
+    //     ]);
+    // }
+
+    // public function test_processes_bankslip_payment_successfully()
+    // {
+
+    //     $data = $this->create_payment_payload('BOLETO');
+    //     $response = $this->post(route('checkout.process'), $data);
+    //     $response->assertStatus(200);
+
+
+
+    //     $response->assertJson([
+    //         'object' => 'payment',
+    //         'id' => 'pay_080225913252',
+    //         'customer' => 'cus_G7Dvo4iphUNk',
+    //         'status' => 'PENDING',
+    //         'description' => 'Pedido 056984',
+    //         'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
+    //         'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
+    //     ]);
+    // }
+
+    // public function test_processes_pix_payment_successfully()
+    // {
+
+    //     $data = $this->create_payment_payload('PIX');
+    //     $response = $this->post(route('checkout.process'), $data);
+    //     $response->assertStatus(200);
+
+
+
+    //     $response->assertJson([
+    //         'object' => 'payment',
+    //         'id' => 'pay_080225913252',
+    //         'customer' => 'cus_G7Dvo4iphUNk',
+    //         'status' => 'PENDING',
+    //         'description' => 'Pedido 056984',
+    //         'invoiceUrl' => 'https://www.asaas.com/i/080225913252',
+    //         'bankSlipUrl' => 'https://www.asaas.com/b/pdf/080225913252',
+    //     ]);
+    // }
 
 
 

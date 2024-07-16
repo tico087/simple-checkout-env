@@ -11,23 +11,20 @@ class PaymentRequestData extends Data
     public function __construct(
         public string $customer,
         public string $billingType,
-        public string $dueDate,
+        public ?string $dueDate,
         public float $value,
         public ?string $description,
         public ?string $externalReference,
         public ?int $installmentCount = 1,
-        public ?float $installmentValue,
-        public ?float $totalValue,
-        public ?CustomerCreditcardRequestData $creditCard,
-        public ?CustomerCreditcardHolderInfoRequestData $creditCardHolderInfo,
-
-
+        public ?float $installmentValue = null,
+        public ?float $totalValue = null,
+        public ?CustomerCreditcardRequestData $creditCard = null,
+        public ?CustomerCreditcardHolderInfoRequestData $creditCardHolderInfo = null
     ) {
     }
 
     public static function fromArray(array $data): static
     {
-
         $value = $data['payment']['total'];
         $installments = $data['payment']['installments'] ?? 1;
         $installmentValue = round($value / $installments, 2);
@@ -44,7 +41,6 @@ class PaymentRequestData extends Data
             totalValue: $data['totalValue'] ?? null,
             creditCard: ($data['payment']['billingType'] === 'CREDIT_CARD') ? CustomerCreditcardRequestData::fromArray($data['payment']) : null,
             creditCardHolderInfo: CustomerCreditcardHolderInfoRequestData::fromArray($data)
-
         );
     }
 

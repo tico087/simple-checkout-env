@@ -70,7 +70,7 @@ class PaymentData extends Data
             description: $data['response']['description'] ?? null,
             transaction_id: $data['response']['id'],
             // due_date: isset($data['response']['dueDate']) ? Carbon::createFromFormat('Y-m-d', $data['response']['dueDate']) : null,
-            installments: is_int($data['response']['installmentNumber']) ?: 1,
+            installments: is_int($data['response']['installmentNumber']) ? $data['response']['installmentNumber'] : 1,
             bankslip_url: $data['response']['bankSlipUrl'] ?? null,
             invoice_url: $data['response']['invoiceUrl'] ?? null,
             qr_code: $data['response']['qr_code'] ?? null,
