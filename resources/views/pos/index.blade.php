@@ -52,6 +52,10 @@
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}" id="main-style-link">
 
     <style>
+        .hidden {
+            display: none !important;
+        }
+
         .bg-color {
             @if ($color == 'theme-1')
                 background: linear-gradient(141.55deg, rgba(81, 69, 157, 0) 3.46%, rgba(255, 58, 110, 0.6) 99.86%), #51459d;
@@ -93,6 +97,13 @@
                                     <input id="searchproduct" type="text" data-url="{{ route('search.products') }}"
                                         placeholder="{{ __('Search Product') }}"
                                         class="form-control pr-4 rounded-right">
+
+                                    <div class="input-group-prepend" id="organizacao1">
+                                        <span class="input-group-text"><img width="17px" src="https://www.svgrepo.com/show/506800/burger-menu.svg" alt=""></i></span>
+                                    </div>
+                                    <div class="input-group-prepend" id="organizacao2">
+                                        <span class="input-group-text"><i class="ti ti-layout"></i></span>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -103,8 +114,10 @@
                                 <div class="form-row m-0" id="categories-listing">
                                 </div>
                             </div>
-                            <div class="product-body-nop">
+                            <div class="product-body-nop ">
                                 <div class="form-row" id="product-listing">
+                                </div>
+                                <div class="form-row d-flex flex-column" id="product-listing2">
                                 </div>
                             </div>
                         </div>
@@ -164,103 +177,101 @@
                                             @endphp
 
 
-                                        
-                                                <tr data-product-id="{{ $id }}"
-                                                    id="product-id-{{ $id }}">
-                                                    <td class="cart-images">
-                                                        <img alt="Image placeholder"
-                                                            src="{{ asset(Storage::url('uploads/pro_image/' . $image_url)) }}"
-                                                            class="card-image avatar rounded-circle-sale shadow hover-shadow-lg">
-                                                    </td>
-                                                    <td class="name">{{ $details['name'] }}</td>
-                                                    @if ($product->grams)
-                                                        <td>
-                                                            <span class="quantity buttons_added">
-                                                                <input type="button" value="-" class="minus">
-                                                                <input type="number" step="0.01" min="0.01"
-                                                                    max="" name="quantity"
-                                                                    title="{{ __('Quantity') }}" class="input-number"
-                                                                    data-url="{{ url('update-cart/') }}"
-                                                                    data-id="{{ $id }}" size="4"
-                                                                    value="{{ $quantity_value }}">
-                                                                <input type="button" value="+" class="plus">
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            @if (!empty($product->tax_id))
-                                                                @php
-                                                                    $taxes = \Utility::tax($product->tax_id);
-                                                                @endphp
-                                                                @foreach ($taxes as $tax)
-                                                                    <span
-                                                                        class="badge bg-primary">{{ $tax->name . ' (' . $tax->rate . '%)' }}</span>
-                                                                    <br>
-                                                                @endforeach
-                                                            @else
-                                                                -
-                                                            @endif
-                                                        </td>
-                                                        <td class="price text-right">
-                                                            {{ Auth::user()->priceFormat($details['price']) }}</td>
 
-                                                        <td class="col-sm-3 mt-2">
-                                                            <span
-                                                                class="subtotal">{{ Auth::user()->priceFormat($product_price * $details['quantity']) }}</span>
-                                                        </td>
-                                                    @else
-                                                        <td>
-                                                            <span class="quantity buttons_added">
-                                                                <input type="button" value="-" class="minus">
-                                                                <input type="number" step="1" min="1"
-                                                                    max="" name="quantity"
-                                                                    title="{{ __('Quantity') }}" class="input-number"
-                                                                    data-url="{{ url('update-cart/') }}"
-                                                                    data-id="{{ $id }}" size="4"
-                                                                    value="{{ $details['quantity'] }}">
-                                                                <input type="button" value="+" class="plus">
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            @if (!empty($product->tax_id))
-                                                                @php
-                                                                    $taxes = \Utility::tax($product->tax_id);
-                                                                @endphp
-                                                                @foreach ($taxes as $tax)
-                                                                    <span
-                                                                        class="badge bg-primary">{{ $tax->name . ' (' . $tax->rate . '%)' }}</span>
-                                                                    <br>
-                                                                @endforeach
-                                                            @else
-                                                                -
-                                                            @endif
-                                                        </td>
-                                                        <td class="price text-right">
-                                                            {{ Auth::user()->priceFormat($details['price']) }}</td>
-                                                        <td class="col-sm-3 mt-2">
-                                                            <span
-                                                                class="subtotal">{{ Auth::user()->priceFormat($details['subtotal']) }}</span>
-                                                        </td>
-                                                    @endif
-
-                                                    <td class="col-sm-2 mt-2">
-                                                        <a href="#"
-                                                            class="action-btn bg-danger bs-pass-para-pos"
-                                                            data-confirm="{{ __('Are You Sure?') }}"
-                                                            data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
-                                                            data-confirm-yes="delete-form-{{ $id }}"
-                                                            title="{{ __('Delete') }}"
-                                                            data-id="{{ $id }}">
-                                                            <i class="ti ti-trash text-white mx-3 btn btn-sm"
-                                                                title="{{ __('Delete') }}"></i>
-                                                        </a>
-                                                        {!! Form::open(['method' => 'delete', 'url' => ['remove-from-cart'], 'id' => 'delete-form-' . $id]) !!}
-                                                        <input type="hidden" name="session_key"
-                                                            value="{{ $lastsegment }}">
-                                                        <input type="hidden" name="id"
-                                                            value="{{ $id }}">
-                                                        {!! Form::close() !!}
+                                            <tr data-product-id="{{ $id }}"
+                                                id="product-id-{{ $id }}">
+                                                <td class="cart-images">
+                                                    <img alt="Image placeholder"
+                                                        src="{{ asset(Storage::url('uploads/pro_image/' . $image_url)) }}"
+                                                        class="card-image avatar rounded-circle-sale shadow hover-shadow-lg">
+                                                </td>
+                                                <td class="name">{{ $details['name'] }}</td>
+                                                @if ($product->grams)
+                                                    <td>
+                                                        <span class="quantity buttons_added">
+                                                            <input type="button" value="-" class="minus">
+                                                            <input type="number" step="0.01" min="0.01"
+                                                                max="" name="quantity"
+                                                                title="{{ __('Quantity') }}" class="input-number"
+                                                                data-url="{{ url('update-cart/') }}"
+                                                                data-id="{{ $id }}" size="4"
+                                                                value="{{ $quantity_value }}">
+                                                            <input type="button" value="+" class="plus">
+                                                        </span>
                                                     </td>
-                                                </tr>
+                                                    <td>
+                                                        @if (!empty($product->tax_id))
+                                                            @php
+                                                                $taxes = \Utility::tax($product->tax_id);
+                                                            @endphp
+                                                            @foreach ($taxes as $tax)
+                                                                <span
+                                                                    class="badge bg-primary">{{ $tax->name . ' (' . $tax->rate . '%)' }}</span>
+                                                                <br>
+                                                            @endforeach
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td class="price text-right">
+                                                        {{ Auth::user()->priceFormat($details['price']) }}</td>
+
+                                                    <td class="col-sm-3 mt-2">
+                                                        <span
+                                                            class="subtotal">{{ Auth::user()->priceFormat($product_price * $details['quantity']) }}</span>
+                                                    </td>
+                                                @else
+                                                    <td>
+                                                        <span class="quantity buttons_added">
+                                                            <input type="button" value="-" class="minus">
+                                                            <input type="number" step="1" min="1"
+                                                                max="" name="quantity"
+                                                                title="{{ __('Quantity') }}" class="input-number"
+                                                                data-url="{{ url('update-cart/') }}"
+                                                                data-id="{{ $id }}" size="4"
+                                                                value="{{ $details['quantity'] }}">
+                                                            <input type="button" value="+" class="plus">
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        @if (!empty($product->tax_id))
+                                                            @php
+                                                                $taxes = \Utility::tax($product->tax_id);
+                                                            @endphp
+                                                            @foreach ($taxes as $tax)
+                                                                <span
+                                                                    class="badge bg-primary">{{ $tax->name . ' (' . $tax->rate . '%)' }}</span>
+                                                                <br>
+                                                            @endforeach
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+                                                    <td class="price text-right">
+                                                        {{ Auth::user()->priceFormat($details['price']) }}</td>
+                                                    <td class="col-sm-3 mt-2">
+                                                        <span
+                                                            class="subtotal">{{ Auth::user()->priceFormat($details['subtotal']) }}</span>
+                                                    </td>
+                                                @endif
+
+                                                <td class="col-sm-2 mt-2">
+                                                    <a href="#" class="action-btn bg-danger bs-pass-para-pos"
+                                                        data-confirm="{{ __('Are You Sure?') }}"
+                                                        data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
+                                                        data-confirm-yes="delete-form-{{ $id }}"
+                                                        title="{{ __('Delete') }}" data-id="{{ $id }}">
+                                                        <i class="ti ti-trash text-white mx-3 btn btn-sm"
+                                                            title="{{ __('Delete') }}"></i>
+                                                    </a>
+                                                    {!! Form::open(['method' => 'delete', 'url' => ['remove-from-cart'], 'id' => 'delete-form-' . $id]) !!}
+                                                    <input type="hidden" name="session_key"
+                                                        value="{{ $lastsegment }}">
+                                                    <input type="hidden" name="id"
+                                                        value="{{ $id }}">
+                                                    {!! Form::close() !!}
+                                                </td>
+                                            </tr>
                                         @endforeach
                                     @else
                                         <tr class="text-center no-found">
@@ -384,11 +395,11 @@
     @stack('script-page')
 
     <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
-        <style>
-            .input-number{
-                width: 60px !important;
-            }
-        </style>
+    <style>
+        .input-number {
+            width: 60px !important;
+        }
+    </style>
     <script>
         $.ajaxSetup({
             headers: {
@@ -407,6 +418,52 @@
 
             });
 
+            var divgroup1 = document.getElementById('product-listing');
+            var divgroup2 = document.getElementById('product-listing2');
+            var group1Elements = document.getElementsByClassName('group1');
+            var group2Elements = document.getElementsByClassName('group2');
+            divgroup2.classList.add('hidden');
+
+
+            for (var i = 0; i < group1Elements.length; i++) {
+                group1Elements[i].classList.add('hidden');
+            }
+
+            $(document).on('click', '#organizacao1', function(e) {
+
+
+                divgroup2.classList.remove('hidden');
+                divgroup1.classList.add('hidden');
+
+                for (var i = 0; i < group1Elements.length; i++) {
+                    group2Elements[i].classList.add('hidden');
+                }
+                for (var i = 0; i < group2Elements.length; i++) {
+                    group1Elements[i].classList.remove('hidden');
+                }
+
+
+
+            });
+
+            $(document).on('click', '#organizacao2', function(e) {
+                var group1Elements = document.getElementsByClassName('group1');
+                var group2Elements = document.getElementsByClassName('group2');
+
+                divgroup2.classList.add('hidden');
+                divgroup1.classList.remove('hidden');
+
+                for (var i = 0; i < group1Elements.length; i++) {
+                    group2Elements[i].classList.remove('hidden');
+                }
+                for (var i = 0; i < group2Elements.length; i++) {
+                    group1Elements[i].classList.add('hidden');
+                }
+            });
+
+
+
+
             // if ($('#searchproduct').length > 0) {
             //     var url = $('#searchproduct').data('url');
             //     searchProducts(url,'','0');
@@ -415,6 +472,7 @@
             if ($('#searchproduct').length > 0) {
                 var url = $('#searchproduct').data('url');
                 var ware_id = $("#warehouse").val();
+
                 searchProducts(url, '', '0', ware_id);
             }
 
@@ -441,7 +499,7 @@
 
                         $("#tbody").html(
                             '<tr class="text-center no-found"><td colspan="7">{{ __('No Data Found.!') }}</td></tr>'
-                            );
+                        );
 
                     }
                 });
@@ -477,11 +535,29 @@
                         'session_key': session_key
                     },
                     success: function(data) {
+
+
                         // console.log(data)
+
+
+
                         $('#product-listing').html(data);
+                        $('#product-listing2').html(data);
+                        var group1Elements = document.getElementsByClassName('group1');
+                        var divgroup1 = document.getElementById('product-listing');
+                        var divgroup2 = document.getElementById('product-listing2');
+
+                        divgroup2.classList.add('hidden');
+                        divgroup1.classList.remove('hidden');
+
+                        for (var i = 0; i < group1Elements.length; i++) {
+                            group1Elements[i].classList.add('hidden');
+                        }
                     }
                 });
             }
+
+
 
             function getProductCategories() {
                 $.ajax({
