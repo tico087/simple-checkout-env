@@ -1,48 +1,52 @@
-@php
+<?php
     $logo = \App\Models\Utility::get_file('uploads/logo');
     $company_logo = Utility::getValByName('company_logo');
-@endphp
+?>
 
-{{-- @dump($details); --}}
-@if (!empty($sales) && count($sales) > 0)
+
+<?php if(!empty($sales) && count($sales) > 0): ?>
     <div class="card">
         <div class="card-body">
             <div class="row mt-2">
                 <div class="col-6">
-                    <img src="{{ $logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png') }}"
+                    <img src="<?php echo e($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png')); ?>"
                         width="120px;">
                 </div>
-                {{--                <div class="col-6 text-end"> --}}
-                {{--                    <a href="#" class="btn btn-sm btn-primary" onclick="saveAsPDF()"><span class="ti ti-download"></span></a> --}}
-                {{--                </div> --}}
+                
+                
+                
             </div>
             <div id="printableArea">
                 <div class="row mt-3">
                     <div class="col-6">
-                        <h1 class="invoice-id h6">{{ $details['pos_id'] }}</h1>
-                        <div class="date"><b>{{ __('Date') }}: </b>{{ $details['date'] }}</div>
+                        <h1 class="invoice-id h6"><?php echo e($details['pos_id']); ?></h1>
+                        <div class="date"><b><?php echo e(__('Date')); ?>: </b><?php echo e($details['date']); ?></div>
                     </div>
                     <div class="col-6 text-end">
-                        <div class="text-dark "><b>{{ __('Warehouse Name') }}: </b>
-                            {!! $details['warehouse']['details'] !!}
+                        <div class="text-dark "><b><?php echo e(__('Warehouse Name')); ?>: </b>
+                            <?php echo $details['warehouse']['details']; ?>
+
                         </div>
                     </div>
                 </div>
                 <div class="row mt-2">
                     <div class="col contacts d-flex justify-content-between pb-4">
                         <div class="invoice-to">
-                            <div class="text-dark h6"><b>{{ __('Billed To :') }}</b></div>
-                            {!! $details['customer']['details'] !!}
+                            <div class="text-dark h6"><b><?php echo e(__('Billed To :')); ?></b></div>
+                            <?php echo $details['customer']['details']; ?>
+
                         </div>
-                        @if (!empty($details['customer']['shippdetails']))
+                        <?php if(!empty($details['customer']['shippdetails'])): ?>
                             <div class="invoice-to">
-                                <div class="text-dark h6"><b>{{ __('Shipped To :') }}</b></div>
-                                {!! $details['customer']['shippdetails'] !!}
+                                <div class="text-dark h6"><b><?php echo e(__('Shipped To :')); ?></b></div>
+                                <?php echo $details['customer']['shippdetails']; ?>
+
                             </div>
-                        @endif
+                        <?php endif; ?>
                         <div class="company-details">
-                            <div class="text-dark h6"><b>{{ __('From:') }}</b></div>
-                            {!! $details['user']['details'] !!}
+                            <div class="text-dark h6"><b><?php echo e(__('From:')); ?></b></div>
+                            <?php echo $details['user']['details']; ?>
+
                         </div>
                     </div>
                 </div>
@@ -50,98 +54,99 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="text-left">{{ __('Items') }}</th>
-                                <th>{{ __('Quantity') }}</th>
-                                <th class="text-right">{{ __('Price') }}</th>
-                                <th class="text-right">{{ __('Tax') }}</th>
-                                <th class="text-right">{{ __('Tax Amount') }}</th>
-                                <th class="text-right">{{ __('Total') }}</th>
+                                <th class="text-left"><?php echo e(__('Items')); ?></th>
+                                <th><?php echo e(__('Quantity')); ?></th>
+                                <th class="text-right"><?php echo e(__('Price')); ?></th>
+                                <th class="text-right"><?php echo e(__('Tax')); ?></th>
+                                <th class="text-right"><?php echo e(__('Tax Amount')); ?></th>
+                                <th class="text-right"><?php echo e(__('Total')); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($sales['data'] as $key => $value)
-                                {{--                            @dd($value) --}}
+                            <?php $__currentLoopData = $sales['data']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                
                                 <tr>
                                     <td class="cart-summary-table text-left">
-                                        {{ $value['name'] }}
+                                        <?php echo e($value['name']); ?>
+
                                     </td>
                                     <td class="cart-summary-table">
-                                        {{ $value['quantity'] }}
+                                        <?php echo e($value['quantity']); ?>
+
                                     </td>
                                     <td class="text-right cart-summary-table">
-                                        {{ $value['price'] }}
+                                        <?php echo e($value['price']); ?>
+
                                     </td>
                                     <td class="text-right cart-summary-table">
-                                        {!! $value['product_tax'] !!}
+                                        <?php echo $value['product_tax']; ?>
+
                                     </td>
 
 
                                     <td class="text-right cart-summary-table">
-                                        {{ $value['tax_amount'] }}
+                                        <?php echo e($value['tax_amount']); ?>
+
                                     </td>
                                     <td class="text-right cart-summary-table">
-                                        {{ $value['subtotal'] }}
+                                        <?php echo e($value['subtotal']); ?>
+
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td class="">{{ __('Sub Total') }}</td>
+                                <td class=""><?php echo e(__('Sub Total')); ?></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class="text-right">{{ $sales['sub_total'] }}</td>
+                                <td class="text-right"><?php echo e($sales['sub_total']); ?></td>
                             </tr>
                             <tr>
-                                <td class="">{{ __('Discount') }}</td>
+                                <td class=""><?php echo e(__('Discount')); ?></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class="text-right">{{ $sales['discount'] }}</td>
+                                <td class="text-right"><?php echo e($sales['discount']); ?></td>
                             </tr>
                             <tr class="pos-header">
-                                <td class="">{{ __('Total') }}</td>
+                                <td class=""><?php echo e(__('Total')); ?></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class="text-right">{{ $sales['total'] }}</td>
+                                <td class="text-right"><?php echo e($sales['total']); ?></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
             </div>
 
-            {{-- @if ($details['pay'] == 'show')
-                <a href="#" class="btn btn-success btn-done-payment rounded mt-2 float-right"
-                    data-url="{{ route('pos.data.store') }}">{{ __('Cash Payment') }}</a>
+            
 
-                <button class="btn btn-success payment-done-btn rounded mt-2 float-right"
-                    data-url="{{ route('pos.printview') }}" data-ajax-popup="true" data-size="sm"
-                    data-bs-toggle="tooltip" data-title="{{ __('POS Invoice') }}">
-                    {{ __('Cash Payment') }}
-                </button>
-            @endif --}}
-
-            @if ($details['pay'] == 'show')
+            <?php if($details['pay'] == 'show'): ?>
                 <div class="row mt-3">
                     <div class="col-12">
-                        <h5>{{ __('Select Payment Method') }}</h5>
+                        <h5><?php echo e(__('Select Payment Method')); ?></h5>
                         <div class="payment-options d-flex justify-content-around">
                             <button class="btn btn-outline-primary payment-method-btn" data-method="cash">
-                                {{ __('Cash Payment') }}
+                                <?php echo e(__('Cash Payment')); ?>
+
                             </button>
                             <button class="btn btn-outline-success payment-method-btn" data-method="pix">
-                                {{ __('Pix Payment') }}
+                                <?php echo e(__('Pix Payment')); ?>
+
                             </button>
                             <button class="btn btn-outline-info payment-method-btn" data-method="debit">
-                                {{ __('Debit Payment') }}
+                                <?php echo e(__('Debit Payment')); ?>
+
                             </button>
                             <button class="btn btn-outline-warning payment-method-btn" data-method="credit">
-                                {{ __('Credit Payment') }}
+                                <?php echo e(__('Credit Payment')); ?>
+
                             </button>
                         </div>
                     </div>
@@ -149,21 +154,21 @@
                 <div class="row mt-3" style="height: 20vh;">
                     <div class="col-12 d-flex justify-content-center align-items-center">
                         <button id="confirm-payment-btn" class="btn btn-success rounded mt-2" disabled
-                            {{-- data-url="{{ route('pos.printview') }}" data-ajax-popup="true" data-size="sm"
-                            data-bs-toggle="tooltip" data-title="{{ __('POS Invoice') }}" --}}>
-                            {{ __('Confirm Payment') }}
+                            >
+                            <?php echo e(__('Confirm Payment')); ?>
+
                         </button>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
 
         </div>
     </div>
 
-@endif
+<?php endif; ?>
 
 
-<script type="text/javascript" src="{{ asset('js/html2pdf.bundle.min.js') }}"></script>
+<script type="text/javascript" src="<?php echo e(asset('js/html2pdf.bundle.min.js')); ?>"></script>
 <script>
     var filename = $('#filename').val()
 
@@ -203,24 +208,26 @@
         var paymentMethod = $('.payment-method-btn.active').data('method');
         var salesData = [];
 
+        console.log("<?php echo e($details['pos_id']); ?>")
+
         var formData = {
-            _token: "{{ csrf_token() }}",
-            pos_id: "{{ $details['pos_id'] }}",
-            date: "{{ $details['date'] }}",
-            warehouse: {!! json_encode($details['warehouse']) !!},
-            customer_details: {!! json_encode($details['customer']['details']) !!},
-            shipping_details: {!! json_encode($details['customer']['shippdetails']) !!},
-            user_details: {!! json_encode($details['user']['details']) !!},
+            _token: "<?php echo e(csrf_token()); ?>",
+            pos_id: "<?php echo e($details['pos_id']); ?>",
+            date: "<?php echo e($details['date']); ?>",
+            warehouse: <?php echo json_encode($details['warehouse']); ?>,
+            customer_details: <?php echo json_encode($details['customer']['details']); ?>,
+            shipping_details: <?php echo json_encode($details['customer']['shippdetails']); ?>,
+            user_details: <?php echo json_encode($details['user']['details']); ?>,
             sales: salesData,
-            sub_total: "{{ $sales['sub_total'] }}",
-            discount: "{{ $sales['discount'] }}",
-            total: "{{ $sales['total'] }}",
+            sub_total: "<?php echo e($sales['sub_total']); ?>",
+            discount: "<?php echo e($sales['discount']); ?>",
+            total: "<?php echo e($sales['total']); ?>",
             payment_method: paymentMethod
         };
 
 
         $.ajax({
-            url: "{{ route('pos.data.store') }}",
+            url: "<?php echo e(route('pos.data.store')); ?>",
             method: 'POST',
             data: formData,
             beforeSend: function() {
@@ -233,8 +240,9 @@
             },
             error: function(data) {
                 data = data.responseJSON;
-                show_toastr('{{ __('Error') }}', data.error, 'error');
+                show_toastr('<?php echo e(__('Error')); ?>', data.error, 'error');
             }
         });
     });
 </script>
+<?php /**PATH /var/www/resources/views/pos/show.blade.php ENDPATH**/ ?>

@@ -1,0 +1,23 @@
+duvidas
+
+    tirar duvida fluxo cadastro produto
+    pq as categorias só listão do tipo 0 ?
+
+erros
+
+    categorias não está carregando
+    preço comprar zerado na listagem de produto
+
+
+melhorias
+
+    cadastro produto
+        gerador de sku
+        mascara sku
+        mascara de preço
+
+
+    responsividade
+
+
+

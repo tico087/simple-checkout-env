@@ -162,18 +162,15 @@ class PosController extends Controller
      */
     public function store(Request $request)
     {
-//        dd($request->all());
 
-        $discount=$request->discount;
+        $discount= (float) $request->discount;
 
-//        dd($request->all());
         if (Auth::user()->can('manage pos')) {
             $user_id = Auth::user()->creatorId();
             $customer_id      = Customer::customer_id($request->vc_name);
             $warehouse_id      = warehouse::warehouse_id($request->warehouse_name);
             $pos_id       = $this->invoicePosNumber();
             $sales            = session()->get('pos');
-//            dd($sales);
 
             if (isset($sales) && !empty($sales) && count($sales) > 0) {
                 $result = DB::table('pos')->where('pos_id', $pos_id)->where('created_by', $user_id)->get();
@@ -188,7 +185,7 @@ class PosController extends Controller
                     $pos = new Pos();
                     $pos->pos_id       = $pos_id;
                     $pos->customer_id      = $customer_id;
-                    $pos->warehouse_id      = $request->warehouse_name;
+                    $pos->warehouse_id      =$warehouse_id;
                     $pos->created_by       = $user_id;
                     $pos->save();
 
@@ -218,7 +215,7 @@ class PosController extends Controller
 //                        $positems->tax        = $value['tax'];
                         $positems->save();
 
-                        Utility::warehouse_quantity('minus',$positems->quantity,$positems->product_id,$request->warehouse_name);
+                        Utility::warehouse_quantity('minus',(int) $positems->quantity, (int) $positems->product_id,$request->warehouse['id']);
 
                         //Product Stock Report
                         $type='pos';
@@ -245,7 +242,7 @@ class PosController extends Controller
                         $sales['data'][$key]['tax']        = $value['tax'] . '%';
                         $sales['data'][$key]['tax_amount'] = Auth::user()->priceFormat($tax);
                         $sales['data'][$key]['subtotal']   = Auth::user()->priceFormat($value['subtotal']);
-                        $mainsubtotal                      += $value['subtotal'];
+                        $mainsubtotal                      +=(float  )$value['subtotal'];
                     }
                     $amount = $mainsubtotal;
                     $posPayment->amount         = $amount;

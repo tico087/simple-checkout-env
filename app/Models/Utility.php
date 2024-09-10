@@ -2552,11 +2552,10 @@ class Utility extends Model
     }
 
     //quantity update in warehouse details
-    public static function warehouse_quantity($type, $quantity, $product_id, $warehouse_id)
+    public static function warehouse_quantity($type, int $quantity, int $product_id, int $warehouse_id)
     {
 
         $product = WarehouseProduct::where('warehouse_id', $warehouse_id)->where('product_id', $product_id)->first();
-
         $pro_quantity = (!empty($product) && !empty($product->quantity)) ? $product->quantity : 0;
 
         if ($type == 'minus') {
@@ -2740,7 +2739,7 @@ class Utility extends Model
             );
         }
 
-        
+
 
 
     }
