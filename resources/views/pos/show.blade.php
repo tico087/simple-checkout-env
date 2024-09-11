@@ -131,16 +131,16 @@
                     <div class="col-12">
                         <h5>{{ __('Select Payment Method') }}</h5>
                         <div class="payment-options d-flex justify-content-around">
-                            <button class="btn btn-outline-primary payment-method-btn" data-method="cash">
+                            <button class="btn btn-outline-primary payment-method-btn btn-cash" data-method="cash">
                                 {{ __('Cash Payment') }}
                             </button>
-                            <button class="btn btn-outline-success payment-method-btn" data-method="pix">
+                            <button class="btn btn-outline-success payment-method-btn btn-pix" data-method="pix">
                                 {{ __('Pix Payment') }}
                             </button>
-                            <button class="btn btn-outline-info payment-method-btn" data-method="debit">
+                            <button class="btn btn-outline-info payment-method-btn btn-debit" data-method="debit">
                                 {{ __('Debit Payment') }}
                             </button>
-                            <button class="btn btn-outline-warning payment-method-btn" data-method="credit">
+                            <button class="btn btn-outline-warning payment-method-btn btn-credit" data-method="credit">
                                 {{ __('Credit Payment') }}
                             </button>
                         </div>
@@ -149,8 +149,8 @@
                 <div class="row mt-3" style="height: 20vh;">
                     <div class="col-12 d-flex justify-content-center align-items-center">
                         <button id="confirm-payment-btn" class="btn btn-success rounded mt-2" disabled
-                            {{-- data-url="{{ route('pos.printview') }}" data-ajax-popup="true" data-size="sm"
-                            data-bs-toggle="tooltip" data-title="{{ __('POS Invoice') }}" --}}>
+                            data-url="{{ route('pos.printview') }}" data-ajax-popup="true" data-size="sm"
+                            data-bs-toggle="tooltip" data-title="{{ __('POS Invoice') }}">
                             {{ __('Confirm Payment') }}
                         </button>
                     </div>
@@ -223,9 +223,9 @@
             url: "{{ route('pos.data.store') }}",
             method: 'POST',
             data: formData,
-            beforeSend: function() {
+            /*beforeSend: function() {
                 ele.remove();
-            },
+            },*/
             success: function(data) {
                 if (data.code == 200) {
                     show_toastr('success', data.success, 'success')
@@ -238,3 +238,35 @@
         });
     });
 </script>
+
+<style>
+    .payment-method-btn {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+    }
+
+    .btn-cash {
+        background-color: #f8f9fa;
+        border-color: #007bff;
+
+    }
+
+    .btn-pix {
+        background-color: #e2e6ea;
+        border-color: #28a745;
+
+    }
+
+    .btn-debit {
+        background-color: #d1ecf1;
+        border-color: #17a2b8;
+
+    }
+
+    .btn-credit {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+
+    }
+</style>

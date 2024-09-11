@@ -245,10 +245,12 @@ class PosController extends Controller
                         $mainsubtotal                      +=(float  )$value['subtotal'];
                     }
                     $amount = $mainsubtotal;
+                    $paymentMethod = $request->payment_method;
                     $posPayment->amount         = $amount;
                     $total= $mainsubtotal- $discount;
                     $posPayment->discount         = $discount;
                     $posPayment->discount_amount       = $total;
+                    $posPayment->payment_method       = $paymentMethod;
                     $posPayment->save();
 
                     session()->forget('pos');
@@ -731,11 +733,11 @@ class PosController extends Controller
     public function printView(Request $request)
     {
 
-
         $sess = session()->get('pos');
-
+        dd($sess);
         $user = Auth::user();
         $settings = Utility::settings();
+
 
         $customer = Customer::where('name', '=', $request->vc_name)->where('created_by', $user->creatorId())->first();
         $warehouse = warehouse::where('id', '=', $request->warehouse_name)->where('created_by', $user->creatorId())->first();
@@ -783,19 +785,22 @@ class PosController extends Controller
         $mainsubtotal = 0;
         $sales        = [];
 
-        foreach ($sess as $key => $value) {
 
-            $subtotal = $value['price'] * $value['quantity'];
-            $tax      = ($subtotal * $value['tax']) / 100;
-            $sales['data'][$key]['name']       = $value['name'];
-            $sales['data'][$key]['quantity']   = $value['quantity'];
-            $sales['data'][$key]['price']      = Auth::user()->priceFormat($value['price']);
-            $sales['data'][$key]['tax']        = $value['tax'] . '%';
-            $sales['data'][$key]['product_tax']        = $value['product_tax'];
-            $sales['data'][$key]['tax_amount'] = Auth::user()->priceFormat($tax);
-            $sales['data'][$key]['subtotal']   = Auth::user()->priceFormat($value['subtotal']);
-            $mainsubtotal                      += $value['subtotal'];
-        }
+            foreach ($sess as $key => $value) {
+
+                $subtotal = $value['price'] * $value['quantity'];
+                $tax      = ($subtotal * $value['tax']) / 100;
+                $sales['data'][$key]['name']       = $value['name'];
+                $sales['data'][$key]['quantity']   = $value['quantity'];
+                $sales['data'][$key]['price']      = Auth::user()->priceFormat($value['price']);
+                $sales['data'][$key]['tax']        = $value['tax'] . '%';
+                $sales['data'][$key]['product_tax']        = $value['product_tax'];
+                $sales['data'][$key]['tax_amount'] = Auth::user()->priceFormat($tax);
+                $sales['data'][$key]['subtotal']   = Auth::user()->priceFormat($value['subtotal']);
+                $mainsubtotal                      += $value['subtotal'];
+            }
+
+
 
         $discount=!empty($request->discount)?$request->discount:0;
         $sales['discount'] = Auth::user()->priceFormat($discount);

@@ -40,7 +40,7 @@
                 });
             });
             $('#filter-today').click();
-        });        
+        });
 
 
         (function () {
@@ -158,7 +158,7 @@
 
 <?php $__empty_1 = true; $__currentLoopData = $posPayments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $posPayment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
     <?php
-        $rendahoje += floatval($posPayment->posPayment->discount_amount);
+        $rendahoje += floatval($posPayment?->posPayment?->discount_amount);
     ?>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
     <tr>
@@ -168,7 +168,7 @@
 
 <?php $__empty_1 = true; $__currentLoopData = $posPayments2; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $posPayment2): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
     <?php
-            $rendames += floatval($posPayment2->posPayment->discount_amount);
+            $rendames += floatval($posPayment2?->posPayment?->discount_amount);
 
     ?>
 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -239,11 +239,13 @@
             <th><?php echo e(__('Date')); ?></th>
             <th><?php echo e(__('Sub Total')); ?></th>
             <th><?php echo e(__('Discount')); ?></th>
+            <th><?php echo e(__('Payment Method')); ?></th>
             <th><?php echo e(__('Total')); ?></th>
         </tr>
     </thead>
     <tbody>
         <?php $__empty_1 = true; $__currentLoopData = $posPayments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $posPayment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+
             <tr>
                 <td class="Id">
                     <a href="<?php echo e(route('pos.show',\Crypt::encrypt($posPayment->id))); ?>" class="btn btn-outline-primary">
@@ -252,10 +254,12 @@
                     </a>
                 </td>
                 <td><?php echo e(Auth::user()->dateFormat($posPayment->created_at)); ?></td>
-               
+
                 <td><?php echo e(!empty($posPayment->posPayment) ? Auth::user()->priceFormat($posPayment->posPayment->amount) : 0); ?></td>
                 <td><?php echo e(!empty($posPayment->posPayment) ? Auth::user()->priceFormat($posPayment->posPayment->discount) : 0); ?></td>
+                <td><?php echo e($posPayment->paymentMethodF); ?></td>
                 <td><?php echo e(!empty($posPayment->posPayment) ? Auth::user()->priceFormat($posPayment->posPayment->discount_amount) : 0); ?></td>
+
             </tr>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <tr>

@@ -11,6 +11,7 @@ class PosPayment extends Model
         'date',
         'amount',
         'discount',
+        'paymnent_method',
         'created_by',
 
     ];

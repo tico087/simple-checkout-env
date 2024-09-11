@@ -44,8 +44,9 @@
                                     <tr>
                                         <td><?php echo e($productService->name); ?></td>
                                         <td><?php echo e($productService->sku); ?></td>
-                                        <td><?php echo e($productService->barcode); ?></td>
-                                        
+                                        <td>
+                                            <div id="<?php echo e($productService->id); ?>" class="product_barcode product_barcode_hight_de" data-skucode="<?php echo e($productService->sku); ?>"></div>
+                                        </td>
                                     </tr>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>

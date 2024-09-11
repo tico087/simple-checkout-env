@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class Pos extends Model
@@ -66,6 +67,23 @@ class Pos extends Model
         }
 
         return $totalDiscount;
+    }
+
+
+    public function paymentMethodF(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $paymentMethod = $this->posPayment ? $this->posPayment->payment_method : null;
+                return match ($paymentMethod) {
+                    'pix' => 'Pix',
+                    'credit' => 'Crédito',
+                    'debit' => 'Débito',
+                    'cash' => 'Dinheiro',
+                    default => 'Desconhecido',
+                };
+            }
+        );
     }
 
 }

@@ -112,13 +112,6 @@
 
         </div>
 
-         <div class="form-group col-md-6 barcode ">
-            <?php echo e(Form::label('barcode', __('Barcode'),['class'=>'form-label'])); ?>
-
-            <?php echo e(Form::text('barcode',null, array('class' => 'form-control'))); ?>
-
-        </div>
-
 
     </div>
     <?php if(!$customFields->isEmpty()): ?>

@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 @section('page-title')
     {{__('Dashboard')}}
@@ -40,7 +41,7 @@
                 });
             });
             $('#filter-today').click();
-        });        
+        });
 
 
         (function () {
@@ -156,7 +157,7 @@
 
 @forelse ($posPayments as $posPayment)
     @php
-        $rendahoje += floatval($posPayment->posPayment->discount_amount);
+        $rendahoje += floatval($posPayment?->posPayment?->discount_amount);
     @endphp
 @empty
     <tr>
@@ -166,7 +167,7 @@
 
 @forelse ($posPayments2 as $posPayment2)
     @php
-            $rendames += floatval($posPayment2->posPayment->discount_amount);
+            $rendames += floatval($posPayment2?->posPayment?->discount_amount);
 
     @endphp
 @empty
@@ -237,11 +238,13 @@
             <th>{{ __('Date') }}</th>
             <th>{{ __('Sub Total') }}</th>
             <th>{{ __('Discount') }}</th>
+            <th>{{ __('Payment Method') }}</th>
             <th>{{ __('Total') }}</th>
         </tr>
     </thead>
     <tbody>
         @forelse ($posPayments as $posPayment)
+
             <tr>
                 <td class="Id">
                     <a href="{{ route('pos.show',\Crypt::encrypt($posPayment->id)) }}" class="btn btn-outline-primary">
@@ -249,10 +252,12 @@
                     </a>
                 </td>
                 <td>{{ Auth::user()->dateFormat($posPayment->created_at)}}</td>
-               
+
                 <td>{{ !empty($posPayment->posPayment) ? Auth::user()->priceFormat($posPayment->posPayment->amount) : 0 }}</td>
                 <td>{{ !empty($posPayment->posPayment) ? Auth::user()->priceFormat($posPayment->posPayment->discount) : 0 }}</td>
+                <td>{{ $posPayment->paymentMethodF }}</td>
                 <td>{{ !empty($posPayment->posPayment) ? Auth::user()->priceFormat($posPayment->posPayment->discount_amount) : 0 }}</td>
+
             </tr>
         @empty
             <tr>
