@@ -734,7 +734,7 @@ class PosController extends Controller
     {
 
         $sess = session()->get('pos');
-        dd($sess);
+
         $user = Auth::user();
         $settings = Utility::settings();
 
