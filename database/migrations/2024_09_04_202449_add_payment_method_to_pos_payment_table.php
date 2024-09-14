@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::table('pos_payments', function (Blueprint $table) {
             $table->enum('payment_method',
-            ['bankslip', 'credit', 'debit', 'cash'])->after('created_by');
+            ['pix', 'credit', 'debit', 'cash'])->after('created_by');
         });
     }
 

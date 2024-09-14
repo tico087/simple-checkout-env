@@ -29,12 +29,11 @@ class PosController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->can('manage pos'))
-        {
+        if (Auth::user()->can('manage pos')) {
             $customers      = Customer::where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'name');
             $customers->prepend('Walk-in-customer', '');
             $warehouses = warehouse::select('*', \DB::raw("CONCAT(name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-//            $warehouses->prepend('Select Warehouse', '');
+            //            $warehouses->prepend('Select Warehouse', '');
             $user = Auth::user();
             $details = [
                 'pos_id' => $user->posNumberFormat($this->invoicePosNumber()),
@@ -45,10 +44,8 @@ class PosController extends Controller
             ];
 
 
-            return view('pos.index',compact('customers','warehouses','details'));
-        }
-        else
-        {
+            return view('pos.index', compact('customers', 'warehouses', 'details'));
+        } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
@@ -81,8 +78,7 @@ class PosController extends Controller
                 'pay' => 'show',
             ];
 
-            if (!empty($details['customer']))
-            {
+            if (!empty($details['customer'])) {
                 $warehousedetails = '<h7 class="text-dark">' . ucfirst($details['warehouse']['name'])  . '</p></h7>';
                 $details['customer']['billing_state'] = $details['customer']['billing_state'] != '' ? ", " . $details['customer']['billing_state'] : '';
                 $details['customer']['shipping_state'] = $details['customer']['shipping_state'] != '' ? ", " . $details['customer']['shipping_state'] : '';
@@ -90,13 +86,10 @@ class PosController extends Controller
                 $customerdetails = '<h6 class="text-dark">' . ucfirst($details['customer']['name']) . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_phone'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_city'] . $details['customer']['billing_state'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_country'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_zip'] . '</p></h6>';
 
                 $shippdetails = '<h6 class="text-dark"><b>' . ucfirst($details['customer']['name']) . '</b>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_phone'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_city'] . $details['customer']['shipping_state'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_country'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_zip'] . '</p></h6>';
-
-            }
-            else {
+            } else {
                 $customerdetails = '<h2 class="h6"><b>' . __('Walk-in Customer') . '</b><h2>';
                 $warehousedetails = '<h7 class="text-dark">' . ucfirst($details['warehouse']['name'])  . '</p></h7>';
                 $shippdetails = '-';
-
             }
 
 
@@ -107,7 +100,7 @@ class PosController extends Controller
 
             $details['customer']['details'] = $customerdetails;
             $details['warehouse']['details'] = $warehousedetails;
-//
+            //
             $details['customer']['shippdetails'] = $shippdetails;
 
             $details['user']['details'] = $userdetails;
@@ -117,12 +110,12 @@ class PosController extends Controller
 
             foreach ($sess as $key => $value) {
 
-//                $totalTaxRate=Utility::totalTaxRate($product->tax_id);
-//                $product_tax='';
-//                foreach($taxes as $tax){
-//                    $product_tax.=!empty($tax)?"<span class='badge badge-primary'>". $tax->name.' ('.$tax->rate.'%)'."</span><br>":'';
-//
-//                }
+                //                $totalTaxRate=Utility::totalTaxRate($product->tax_id);
+                //                $product_tax='';
+                //                foreach($taxes as $tax){
+                //                    $product_tax.=!empty($tax)?"<span class='badge badge-primary'>". $tax->name.' ('.$tax->rate.'%)'."</span><br>":'';
+                //
+                //                }
 
                 $subtotal = $value['price'] * $value['quantity'];
                 $tax      = ($subtotal * $value['tax']) / 100;
@@ -136,9 +129,9 @@ class PosController extends Controller
                 $mainsubtotal                      += $value['subtotal'];
             }
 
-            $discount=!empty($request->discount)?$request->discount:0;
+            $discount = !empty($request->discount) ? $request->discount : 0;
             $sales['discount'] = Auth::user()->priceFormat($discount);
-            $total= $mainsubtotal-$discount;
+            $total = $mainsubtotal - $discount;
             $sales['sub_total'] = Auth::user()->priceFormat($mainsubtotal);
             $sales['total'] = Auth::user()->priceFormat($total);
 
@@ -163,7 +156,7 @@ class PosController extends Controller
     public function store(Request $request)
     {
 
-        $discount= (float) $request->discount;
+        $discount = (float) $request->discount;
 
         if (Auth::user()->can('manage pos')) {
             $user_id = Auth::user()->creatorId();
@@ -185,7 +178,7 @@ class PosController extends Controller
                     $pos = new Pos();
                     $pos->pos_id       = $pos_id;
                     $pos->customer_id      = $customer_id;
-                    $pos->warehouse_id      =$warehouse_id;
+                    $pos->warehouse_id      = $warehouse_id;
                     $pos->created_by       = $user_id;
                     $pos->save();
 
@@ -212,22 +205,21 @@ class PosController extends Controller
                         $positems->price      = $value['price'];
                         $positems->quantity   = $value['quantity'];
                         $positems->tax       = $tax_id;
-//                        $positems->tax        = $value['tax'];
+                        //                        $positems->tax        = $value['tax'];
                         $positems->save();
 
-                        Utility::warehouse_quantity('minus',(int) $positems->quantity, (int) $positems->product_id,$request->warehouse['id']);
+                        Utility::warehouse_quantity('minus', (int) $positems->quantity, (int) $positems->product_id, $request->warehouse['id']);
 
                         //Product Stock Report
-                        $type='pos';
+                        $type = 'pos';
                         $type_id = $pos->id;
-                        StockReport::where('type','=','pos')->where('type_id' ,'=', $pos->id)->delete();
-                        $description=$positems->quantity.'  '.__(' quantity sold in pos').' '. \Auth::user()->posNumberFormat($pos->pos_id);
-                        Utility::addProductStock( $positems->product_id,$positems->quantity,$type,$description,$type_id);
-
+                        StockReport::where('type', '=', 'pos')->where('type_id', '=', $pos->id)->delete();
+                        $description = $positems->quantity . '  ' . __(' quantity sold in pos') . ' ' . \Auth::user()->posNumberFormat($pos->pos_id);
+                        Utility::addProductStock($positems->product_id, $positems->quantity, $type, $description, $type_id);
                     }
 
                     $posPayment                 = new PosPayment();
-                    $posPayment->pos_id          =$pos->id;
+                    $posPayment->pos_id          = $pos->id;
                     $posPayment->date           = $request->date;
 
                     $mainsubtotal = 0;
@@ -242,18 +234,18 @@ class PosController extends Controller
                         $sales['data'][$key]['tax']        = $value['tax'] . '%';
                         $sales['data'][$key]['tax_amount'] = Auth::user()->priceFormat($tax);
                         $sales['data'][$key]['subtotal']   = Auth::user()->priceFormat($value['subtotal']);
-                        $mainsubtotal                      +=(float  )$value['subtotal'];
+                        $mainsubtotal                      += (float)$value['subtotal'];
                     }
                     $amount = $mainsubtotal;
                     $paymentMethod = $request->payment_method;
                     $posPayment->amount         = $amount;
-                    $total= $mainsubtotal- $discount;
+                    $total = $mainsubtotal - $discount;
                     $posPayment->discount         = $discount;
                     $posPayment->discount_amount       = $total;
                     $posPayment->payment_method       = $paymentMethod;
                     $posPayment->save();
 
-                    session()->forget('pos');
+                    // session()->forget('pos'); // why forget  here?
 
                     return response()->json(
                         [
@@ -278,28 +270,22 @@ class PosController extends Controller
     public function show($ids)
     {
 
-        if(\Auth::user()->can('manage pos'))
-        {
+        if (\Auth::user()->can('manage pos')) {
             $id   = Crypt::decrypt($ids);
 
             $pos = Pos::find($id);
 
-            if($pos->created_by == \Auth::user()->creatorId())
-            {
+            if ($pos->created_by == \Auth::user()->creatorId()) {
                 $posPayment = PosPayment::where('pos_id', $pos->id)->first();
 
                 $customer             = $pos->customer;
                 $iteams               = $pos->items;
 
-                return view('pos.view', compact('pos', 'customer','iteams','posPayment'));
-            }
-            else
-            {
+                return view('pos.view', compact('pos', 'customer', 'iteams', 'posPayment'));
+            } else {
                 return redirect()->back()->with('error', __('Permission denied.'));
             }
-        }
-        else
-        {
+        } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
     }
@@ -318,68 +304,54 @@ class PosController extends Controller
 
     function report()
     {
-        if(\Auth::user()->can('manage pos'))
-        {
+        if (\Auth::user()->can('manage pos')) {
 
             $posPayments = Pos::where('created_by', '=', \Auth::user()->creatorId())->get();
-            return view('pos.report',compact('posPayments'));
-        }
-        else
-        {
+            return view('pos.report', compact('posPayments'));
+        } else {
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
-
     }
 
     function barcode()
     {
-        if(\Auth::user()->can('manage pos'))
-        {
+        if (\Auth::user()->can('manage pos')) {
             $productServices = ProductService::where('created_by', '=', \Auth::user()->creatorId())->get();
             $barcode  = [
-                'barcodeType' => Auth::user()->barcodeType() ,
+                'barcodeType' => Auth::user()->barcodeType(),
                 'barcodeFormat' => Auth::user()->barcodeFormat(),
             ];
 
-            return view('pos.barcode',compact('productServices','barcode'));
-        }
-        else
-        {
+            return view('pos.barcode', compact('productServices', 'barcode'));
+        } else {
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
-
     }
 
     public function setting()
     {
-        if(\Auth::user()->can('manage pos'))
-        {
+        if (\Auth::user()->can('manage pos')) {
             $settings                = Utility::settings();
 
-            return view('pos.setting',compact('settings'));
-        }
-        else
-        {
+            return view('pos.setting', compact('settings'));
+        } else {
             return redirect()->back()->with('error', 'Permission denied.');
         }
-
-
     }
 
     public function BarcodesettingStore(Request $request)
     {
         $request->validate(
-                [
-                    'barcode_type' => 'required',
-                    'barcode_format' => 'required',
-                ]
-            );
+            [
+                'barcode_type' => 'required',
+                'barcode_format' => 'required',
+            ]
+        );
 
         $post['barcode_type'] = $request->barcode_type;
         $post['barcode_format'] = $request->barcode_format;
 
-        foreach($post as $key => $data)
-        {
+        foreach ($post as $key => $data) {
 
             $arr = [
                 $data,
@@ -388,40 +360,33 @@ class PosController extends Controller
             ];
 
             \DB::insert(
-                'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ', $arr
+                'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ',
+                $arr
             );
         }
         return redirect()->back()->with('success', 'Barcode setting successfully updated.');
-
     }
 
     public function printBarcode()
     {
-        if(\Auth::user()->can('manage pos'))
-        {
+        if (\Auth::user()->can('manage pos')) {
             $warehouses = warehouse::select('*', \DB::raw("CONCAT(name) AS name"))->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
 
-            return view('pos.print',compact('warehouses'));
-        }
-        else
-        {
+            return view('pos.print', compact('warehouses'));
+        } else {
             return redirect()->back()->with('error', __('Permission Denied.'));
         }
-
     }
 
     public function getproduct(Request $request)
     {
-//        dd($request->all());
-        if($request->warehouse_id == 0)
-        {
+        //        dd($request->all());
+        if ($request->warehouse_id == 0) {
             $productServices = WarehouseProduct::where('product_id', '=', $request->warehouse_id)->where('created_by', '=', \Auth::user()->creatorId())->get()->pluck('name', 'id')->toArray();
-        }
-        else
-        {
+        } else {
             $productServicesId = WarehouseProduct::where('created_by', '=', \Auth::user()->creatorId())->where('warehouse_id', $request->warehouse_id)->get()->pluck('product_id')->toArray();
-            $productServices = ProductService::whereIn('id', $productServicesId )->get()->pluck('name', 'id')->toArray();
+            $productServices = ProductService::whereIn('id', $productServicesId)->get()->pluck('name', 'id')->toArray();
         }
 
         return response()->json($productServices);
@@ -429,45 +394,38 @@ class PosController extends Controller
 
     public function receipt(Request $request)
     {
-        if(!empty($request->product_id))
-        {
-            $productServices = ProductService::whereIn('id',$request->product_id)->get();
+        if (!empty($request->product_id)) {
+            $productServices = ProductService::whereIn('id', $request->product_id)->get();
             $quantity  = $request->quantity;
             $barcode  = [
                 'barcodeType' => Auth::user()->barcodeType() == '' ? 'code128' : Auth::user()->barcodeType(),
                 'barcodeFormat' => Auth::user()->barcodeFormat() == '' ? 'css' : Auth::user()->barcodeFormat(),
             ];
-        }
-        else
-        {
+        } else {
             return redirect()->back()->with('error', 'Product is required.');
-
         }
 
-        return view('pos.receipt',compact('productServices','barcode','quantity'));
-
+        return view('pos.receipt', compact('productServices', 'barcode', 'quantity'));
     }
 
     public function cartdiscount(Request $request)
     {
 
-        if($request->discount){
+        if ($request->discount) {
             $sess = session()->get('pos');
-            $subtotal = !empty($sess)?array_sum(array_column($sess, 'subtotal')):0;
+            $subtotal = !empty($sess) ? array_sum(array_column($sess, 'subtotal')) : 0;
             $discount = $request->discount;
             $total = $subtotal - $discount;
             $total = User::priceFormats($total);
-
-        }else{
+        } else {
             $sess = session()->get('pos');
-            $subtotal = !empty($sess)?array_sum(array_column($sess, 'subtotal')):0;
+            $subtotal = !empty($sess) ? array_sum(array_column($sess, 'subtotal')) : 0;
             $discount = 0;
             $total = $subtotal - $discount;
             $total = User::priceFormats($total);
         }
 
         return response()->json(['total' => $total], '200');
-
     }
 
     public function pos($pos_id)
@@ -484,8 +442,7 @@ class PosController extends Controller
         $data  = $data->where('created_by', '=', $pos->created_by);
         $data1 = $data->get();
 
-        foreach($data1 as $row)
-        {
+        foreach ($data1 as $row) {
             $settings[$row->name] = $row->value;
         }
 
@@ -498,8 +455,7 @@ class PosController extends Controller
         $taxesData     = [];
         $items         = [];
 
-        foreach($pos->items as $product)
-        {
+        foreach ($pos->items as $product) {
 
             $item              = new \stdClass();
             $item->name        = !empty($product->product()) ? $product->product()->name : '';
@@ -513,10 +469,8 @@ class PosController extends Controller
             $totalDiscount += $item->discount;
             $taxes     = Utility::tax($product->tax);
             $itemTaxes = [];
-            if(!empty($item->tax))
-            {
-                foreach($taxes as $tax)
-                {
+            if (!empty($item->tax)) {
+                foreach ($taxes as $tax) {
                     $taxPrice      = Utility::taxRate($tax->rate, $item->price, $item->quantity);
                     $totalTaxPrice += $taxPrice;
 
@@ -526,21 +480,15 @@ class PosController extends Controller
                     $itemTaxes[]      = $itemTax;
 
 
-                    if(array_key_exists($tax->name, $taxesData))
-                    {
+                    if (array_key_exists($tax->name, $taxesData)) {
                         $taxesData[$tax->name] = $taxesData[$tax->name] + $taxPrice;
-                    }
-                    else
-                    {
+                    } else {
                         $taxesData[$tax->name] = $taxPrice;
                     }
-
                 }
 
                 $item->itemTax = $itemTaxes;
-            }
-            else
-            {
+            } else {
                 $item->itemTax = [];
             }
             $items[] = $item;
@@ -557,26 +505,20 @@ class PosController extends Controller
         $logo         = asset(Storage::url('uploads/logo/'));
         $company_logo = Utility::getValByName('company_logo_dark');
         $pos_logo = Utility::getValByName('pos_logo');
-        if(isset($pos_logo) && !empty($pos_logo))
-        {
+        if (isset($pos_logo) && !empty($pos_logo)) {
             $img = Utility::get_file('pos_logo/') . $pos_logo;
-        }
-        else{
+        } else {
             $img          = asset($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png'));
         }
 
-        if($pos)
-        {
+        if ($pos) {
             $color      = '#' . $settings['pos_color'];
             $font_color = Utility::getFontColor($color);
 
-            return view('pos.templates.' . $settings['pos_template'], compact('pos','posPayment', 'color', 'settings', 'customer', 'img', 'font_color'));
-        }
-        else
-        {
+            return view('pos.templates.' . $settings['pos_template'], compact('pos', 'posPayment', 'color', 'settings', 'customer', 'img', 'font_color'));
+        } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
-
     }
 
     public function previewPos($template, $color)
@@ -586,10 +528,10 @@ class PosController extends Controller
         $settings = Utility::settings();
 
         $pos     = new Pos();
-//        $posPayment = PosPayment::where('pos_id', $pos->id)->first();
+        //        $posPayment = PosPayment::where('pos_id', $pos->id)->first();
         $posPayment     = new posPayment();
-        $posPayment->amount=360;
-        $posPayment->discount=100;
+        $posPayment->amount = 360;
+        $posPayment->discount = 100;
 
         $customer                   = new \stdClass();
         $customer->email            = '<Email>';
@@ -611,8 +553,7 @@ class PosController extends Controller
         $totalTaxPrice = 0;
         $taxesData     = [];
         $items         = [];
-        for($i = 1; $i <= 3; $i++)
-        {
+        for ($i = 1; $i <= 3; $i++) {
             $item           = new \stdClass();
             $item->name     = 'Item ' . $i;
             $item->quantity = 1;
@@ -626,20 +567,16 @@ class PosController extends Controller
             ];
 
             $itemTaxes = [];
-            foreach($taxes as $k => $tax)
-            {
+            foreach ($taxes as $k => $tax) {
                 $taxPrice         = 10;
                 $totalTaxPrice    += $taxPrice;
                 $itemTax['name']  = 'Tax ' . $k;
                 $itemTax['rate']  = '10 %';
                 $itemTax['price'] = '$10';
                 $itemTaxes[]      = $itemTax;
-                if(array_key_exists('Tax ' . $k, $taxesData))
-                {
+                if (array_key_exists('Tax ' . $k, $taxesData)) {
                     $taxesData['Tax ' . $k] = $taxesData['Tax 1'] + $taxPrice;
-                }
-                else
-                {
+                } else {
                     $taxesData['Tax ' . $k] = $taxPrice;
                 }
             }
@@ -650,7 +587,7 @@ class PosController extends Controller
         $pos->pos_id    = 1;
 
         $pos->issue_date = date('Y-m-d H:i:s');
-//        $pos->due_date   = date('Y-m-d H:i:s');
+        //        $pos->due_date   = date('Y-m-d H:i:s');
         $pos->itemData   = $items;
 
         $pos->totalTaxPrice = 60;
@@ -670,16 +607,14 @@ class PosController extends Controller
         $settings_data = \App\Models\Utility::settingsById($pos->created_by);
         $pos_logo = $settings_data['pos_logo'];
 
-        if(isset($pos_logo) && !empty($pos_logo))
-        {
+        if (isset($pos_logo) && !empty($pos_logo)) {
             $img = Utility::get_file('pos_logo/') . $pos_logo;
-        }
-        else{
+        } else {
             $img          = asset($logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png'));
         }
 
 
-        return view('pos.templates.' . $template, compact('pos', 'preview', 'color', 'img', 'settings', 'customer', 'font_color','posPayment'));
+        return view('pos.templates.' . $template, compact('pos', 'preview', 'color', 'img', 'settings', 'customer', 'font_color', 'posPayment'));
     }
 
 
@@ -690,34 +625,31 @@ class PosController extends Controller
         $post = $request->all();
         unset($post['_token']);
 
-        if(isset($post['pos_template']) && (!isset($post['pos_color']) || empty($post['pos_color'])))
-        {
+        if (isset($post['pos_template']) && (!isset($post['pos_color']) || empty($post['pos_color']))) {
             $post['pos_color'] = "ffffff";
         }
 
 
-        if($request->pos_logo)
-        {
+        if ($request->pos_logo) {
             $dir = 'pos_logo/';
             $pos_logo = \Auth::user()->id . '_pos_logo.png';
-            $validation =[
-                'mimes:'.'png',
-                'max:'.'20480',
+            $validation = [
+                'mimes:' . 'png',
+                'max:' . '20480',
             ];
-            $path = Utility::upload_file($request,'pos_logo',$pos_logo,$dir,$validation);
-            if($path['flag']==0)
-            {
+            $path = Utility::upload_file($request, 'pos_logo', $pos_logo, $dir, $validation);
+            if ($path['flag'] == 0) {
                 return redirect()->back()->with('error', __($path['msg']));
             }
             $post['pos_logo'] = $pos_logo;
         }
-//        dd($post);
+        //        dd($post);
 
 
-        foreach($post as $key => $data)
-        {
+        foreach ($post as $key => $data) {
             \DB::insert(
-                'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ', [
+                'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ',
+                [
                     $data,
                     $key,
                     \Auth::user()->creatorId(),
@@ -753,20 +685,16 @@ class PosController extends Controller
 
 
 
-        if (!empty($details['customer']))
-        {
+        if (!empty($details['customer'])) {
             $warehousedetails = '<h7 class="text-dark">' . ucfirst($details['warehouse']['name'])  . '</p></h7>';
             $details['customer']['billing_state'] = $details['customer']['billing_state'] != '' ? ", " . $details['customer']['billing_state'] : '';
             $details['customer']['shipping_state'] = $details['customer']['shipping_state'] != '' ? ", " . $details['customer']['shipping_state'] : '';
             $customerdetails = '<h6 class="text-dark">' . ucfirst($details['customer']['name']) . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_phone'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_city'] . $details['customer']['billing_state'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_country'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['billing_zip'] . '</p></h6>';
             $shippdetails = '<h6 class="text-dark"><b>' . ucfirst($details['customer']['name']) . '</b>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_phone'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_address'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_city'] . $details['customer']['shipping_state'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_country'] . '</p>' . '<p class="m-0 h6 font-weight-normal">' . $details['customer']['shipping_zip'] . '</p></h6>';
-
-        }
-        else {
+        } else {
             $customerdetails = '<h2 class="h6"><b>' . __('Walk-in Customer') . '</b><h2>';
             $warehousedetails = '<h7 class="text-dark">' . ucfirst($details['warehouse']['name'])  . '</p></h7>';
             $shippdetails = '-';
-
         }
 
 
@@ -777,7 +705,7 @@ class PosController extends Controller
 
         $details['customer']['details'] = $customerdetails;
         $details['warehouse']['details'] = $warehousedetails;
-//
+        //
         $details['customer']['shippdetails'] = $shippdetails;
 
         $details['user']['details'] = $userdetails;
@@ -785,26 +713,25 @@ class PosController extends Controller
         $mainsubtotal = 0;
         $sales        = [];
 
+        foreach ($sess as $key => $value) {
 
-            foreach ($sess as $key => $value) {
-
-                $subtotal = $value['price'] * $value['quantity'];
-                $tax      = ($subtotal * $value['tax']) / 100;
-                $sales['data'][$key]['name']       = $value['name'];
-                $sales['data'][$key]['quantity']   = $value['quantity'];
-                $sales['data'][$key]['price']      = Auth::user()->priceFormat($value['price']);
-                $sales['data'][$key]['tax']        = $value['tax'] . '%';
-                $sales['data'][$key]['product_tax']        = $value['product_tax'];
-                $sales['data'][$key]['tax_amount'] = Auth::user()->priceFormat($tax);
-                $sales['data'][$key]['subtotal']   = Auth::user()->priceFormat($value['subtotal']);
-                $mainsubtotal                      += $value['subtotal'];
-            }
-
+            $subtotal = $value['price'] * $value['quantity'];
+            $tax      = ($subtotal * $value['tax']) / 100;
+            $sales['data'][$key]['name']       = $value['name'];
+            $sales['data'][$key]['quantity']   = $value['quantity'];
+            $sales['data'][$key]['price']      = Auth::user()->priceFormat($value['price']);
+            $sales['data'][$key]['tax']        = $value['tax'] . '%';
+            $sales['data'][$key]['product_tax']        = $value['product_tax'];
+            $sales['data'][$key]['tax_amount'] = Auth::user()->priceFormat($tax);
+            $sales['data'][$key]['subtotal']   = Auth::user()->priceFormat($value['subtotal']);
+            $mainsubtotal                      += $value['subtotal'];
+        }
 
 
-        $discount=!empty($request->discount)?$request->discount:0;
+
+        $discount = !empty($request->discount) ? $request->discount : 0;
         $sales['discount'] = Auth::user()->priceFormat($discount);
-        $total= $mainsubtotal-$discount;
+        $total = $mainsubtotal - $discount;
         $sales['sub_total'] = Auth::user()->priceFormat($mainsubtotal);
         $sales['total'] = Auth::user()->priceFormat($total);
 
@@ -812,15 +739,11 @@ class PosController extends Controller
 
         $productServices = ProductService::where('created_by', '=', \Auth::user()->creatorId())->get();
         $barcode  = [
-            'barcodeType' => Auth::user()->barcodeType() ,
+            'barcodeType' => Auth::user()->barcodeType(),
             'barcodeFormat' => Auth::user()->barcodeFormat(),
         ];
 
-        return view('pos.printview', compact('details', 'sales', 'customer','productServices','barcode'));
-
+        session()->forget('pos');
+        return view('pos.printview', compact('details', 'sales', 'customer', 'productServices', 'barcode'));
     }
-
-
-
-
 }

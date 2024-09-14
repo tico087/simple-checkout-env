@@ -1,7 +1,7 @@
 duvidas
 
     tirar duvida fluxo cadastro produto
-    pq as categorias só listão do tipo 0 ?
+    pq as categorias só listam do tipo 0 ?
 
 erros
 
@@ -10,6 +10,8 @@ erros
     ajustar formato de moedas
     ajustar formato de datas
     quantidades ao adicionar ao carrinho
+    carregando de data-table (tela pov-dashboard)
+    carregando da nota fiscal (tela-pos)
 
 
 
@@ -19,6 +21,7 @@ melhorias
         gerador de sku
         mascara sku
         mascara de preço
+        reload de tela de frente de caixa ou limpar carrinho
 
 
     responsividade

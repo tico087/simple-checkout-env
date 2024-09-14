@@ -115,17 +115,6 @@
                 </div>
             </div>
 
-            {{-- @if ($details['pay'] == 'show')
-                <a href="#" class="btn btn-success btn-done-payment rounded mt-2 float-right"
-                    data-url="{{ route('pos.data.store') }}">{{ __('Cash Payment') }}</a>
-
-                <button class="btn btn-success payment-done-btn rounded mt-2 float-right"
-                    data-url="{{ route('pos.printview') }}" data-ajax-popup="true" data-size="sm"
-                    data-bs-toggle="tooltip" data-title="{{ __('POS Invoice') }}">
-                    {{ __('Cash Payment') }}
-                </button>
-            @endif --}}
-
             @if ($details['pay'] == 'show')
                 <div class="row mt-3">
                     <div class="col-12">
@@ -223,9 +212,9 @@
             url: "{{ route('pos.data.store') }}",
             method: 'POST',
             data: formData,
-            /*beforeSend: function() {
+            beforeSend: function() {
                 ele.remove();
-            },*/
+            },
             success: function(data) {
                 if (data.code == 200) {
                     show_toastr('success', data.success, 'success')
